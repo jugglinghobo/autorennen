@@ -22,10 +22,17 @@
                 %a{:href => "/arena", :title => "arena"} arena
               %li.dropdown
                 %a.dropdown-toggle{"data-toggle" => "dropdown", href: "#"}
-                  strecken
+                  racetracks
                   %b.caret
-              %li
-                %a{:href => "/about", :title => "about"} about
+                %ul.dropdown-menu
+                  - Track.all.each do |track|
+                    %li
+                      %a{:href => "/track/#{track.id}/edit", :title => track}= track
+                  - if Track.all.any?
+                    %li.divider
+                  %li
+                    %a{:href => "/track/form", :title => "create new racetrack"}
+                      %span create new racetrack
       #content
         =yield
 
