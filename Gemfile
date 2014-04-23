@@ -11,8 +11,6 @@ gem 'rake', '~> 10.2.2'
 gem 'haml', '~> 4.0.5'
 gem 'sass', '~> 3.3.4'
 
-gem 'sinatra-authentication', '~> 0.4.1'
-
 group :development do
   gem 'rerun', '~> 0.9.0'
   gem 'tux', '~> 0.3.0'
