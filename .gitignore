@@ -1,0 +1,7 @@
+.ruby-version
+.ruby-gemset
+
+.DS_Store
+
+.sass-cache
+dev.db

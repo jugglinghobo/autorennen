@@ -1,0 +1,33 @@
+!!!
+%html
+  %head
+    %title Autorennen
+    %meta{charset: "utf-8"}/
+    %link{:href => "/stylesheets/reset.css", :rel => "stylesheet"}/
+    %link{:href => "/stylesheets/bootstrap/bootstrap.min.css", :rel => "stylesheet"}/
+
+    %link{:href => "/stylesheets/application.css", :rel => "stylesheet"}/
+
+    %script{:src => "/javascript/jquery-1.10.2.min.js"}
+    %script{:src => "/javascript/bootstrap/bootstrap.min.js"}
+    %script{:src => "/javascript/application.js"}
+
+  %body
+    #wrapper
+      #header
+        #navigation.navbar.navbar-static-top{:role => "navigation"}
+          .container
+            %ul.nav.navbar-nav
+              %li
+                %a{:href => "/arena", :title => "arena"} arena
+              %li.dropdown
+                %a.dropdown-toggle{"data-toggle" => "dropdown", href: "#"}
+                  strecken
+                  %b.caret
+              %li
+                %a{:href => "/about", :title => "about"} about
+      #content
+        =yield
+
+      #footer
+

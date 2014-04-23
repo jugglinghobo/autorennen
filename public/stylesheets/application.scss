@@ -1,0 +1,54 @@
+label {
+  width: 60px;
+}
+
+#wrapper {
+  width: 66%;
+  margin: auto;
+}
+
+#navigation {
+
+  .container {
+    width: 100%;
+    margin: auto;
+    padding: 0;
+    border-bottom: 1px solid black;
+  }
+}
+
+.table {
+  display: table;
+  .row {
+    display: table-row;
+    .cell {
+      display: table-cell;
+    }
+  }
+}
+
+.inline {
+  display: inline-block;
+}
+
+.right {
+  text-align: right;
+}
+
+.spacer {
+  margin: 5px 0;
+}
+
+.markdown {
+  font-size: 120%;
+
+  h1, h2, h3, h4, h5, h6 {
+    span {
+      display: none;
+    }
+  }
+}
+
+#footer {
+  height: 40px;
+}
