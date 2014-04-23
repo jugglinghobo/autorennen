@@ -17,22 +17,32 @@
       #header
         #navigation.navbar.navbar-static-top{:role => "navigation"}
           .container
-            %ul.nav.navbar-nav
-              %li
-                %a{:href => "/arena", :title => "arena"} arena
+            %ul.navbar.nav.navbar-nav
               %li.dropdown
-                %a.dropdown-toggle{"data-toggle" => "dropdown", href: "#"}
+                %a.dropdown-toggle{:href => "#", :data => {"toggle" => "dropdown"}}
                   racetracks
                   %b.caret
                 %ul.dropdown-menu
                   - Track.all.each do |track|
                     %li
-                      %a{:href => "/track/#{track.id}/edit", :title => track}= track
+                      %a{:href => "/tracks/#{track.id}/edit", :title => track}= track
                   - if Track.all.any?
                     %li.divider
                   %li
-                    %a{:href => "/track/form", :title => "create new racetrack"}
+                    %a{:href => "/tracks/form", :title => "create new racetrack"}
                       %span create new racetrack
+              %li.dropdown.pull-right
+                %a.dropdown-toggle{:href => "#", :data => {"toggle" => "dropdown"}}
+                  login
+                %ul.login-form.dropdown-menu
+                  %form{:action => "/login"}
+                    %li
+                      %input{:type => "text", :name => "user[username]", :placeholder => "username"}
+                    %li
+                      %input{:type => "password", :name => "user[password]", :placeholder => "password"}
+                    %li.pull-right
+                      %input.btn.btn-sm.btn-success{:type => "submit", :value => "login"}
+
       #content
         =yield
 

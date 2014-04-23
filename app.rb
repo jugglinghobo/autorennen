@@ -6,6 +6,12 @@ require './environment'
 require 'haml'
 require 'sass'
 
+require './track'
+
+post '/login' do
+  user = User.find_by_username params[:username]
+end
+
 get '/' do
   haml :index
 end
@@ -14,7 +20,7 @@ get '/tracks' do
   haml :tracks
 end
 
-get '/tracks/new' do
+get '/tracks/form' do
   @track = Track.new
   haml :"tracks/form"
 end

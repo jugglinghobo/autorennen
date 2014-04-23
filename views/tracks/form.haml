@@ -16,29 +16,14 @@
   %ul
     %li.table
       .row
-        %label.cell{:for => "track_name"} name:
         %input.track_name.cell.form-control{:type => "text", :name => "track[name]", :value => @track.name}
     %li.table
       .row
-        %label.cell{:for => "track_author"} author:
-        %input.track_author.cell.form-control{:type => "text", :name => "track[author]", :value => @track.author}
+        %input.track_creator.cell.form-control{:type => "text", :name => "track[creator]", :value => @track.creator}
     %li.table
       .row
-        %label.cell{:for => "track_color"} color:
-        .cell
-          .input-group.color.table{:data => {"color-format" => "hex"}}
-            .row
-              .input-group-btn.cell
-                %button.btn.btn-default.dropdown-toggle{:type => "button", :style =>  "background-color: #{@track.color}", :data => {:toggle => "dropdown"}}
-                  %span.caret
-              %input.track_color.inline.form-control.cell{:type => "text", :name => "track[color]", :value => @track.color}
-    %li
-      %textarea.track_code.inline.form-control{:name => "track[code]"}= @track.code
     %li
       .pull-right
         %input.btn.btn-success{:type => "submit", :value => "save"}
       .clearfix
-%hr
-.markdown
-  = find_and_preserve glorify(@manual)
 
