@@ -48,9 +48,35 @@ get '/tracks' do
   haml :tracks
 end
 
-get '/tracks/form' do
+get '/tracks/new' do
   @track = Track.new
   haml :"tracks/form"
+end
+
+get '/tracks/:id/edit' do
+  get_track
+  haml :"tracks/form"
+end
+
+post '/tracks/create' do
+  @track = Track.new params[:track]
+  if @track.valid?
+    @track.save
+    flash[:success] = "track saved"
+    redirect to "/tracks/#{@track.id}/edit"
+  else
+    flash[:error] = "track could not be saved"
+    redirect to "/tracks/new"
+  end
+end
+
+get '/tracks/:id.json' do
+  get_track
+  @track.to_json
+end
+
+def get_track
+  @track = Track.find params[:id]
 end
 
 # sass stylesheet hack

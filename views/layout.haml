@@ -7,6 +7,7 @@
     %link{:href => "/stylesheets/bootstrap/bootstrap.min.css", :rel => "stylesheet"}/
 
     %link{:href => "/stylesheets/application.css", :rel => "stylesheet"}/
+    %link{:href => "/stylesheets/tracks.css", :rel => "stylesheet"}/
 
     %script{:src => "/javascript/jquery-1.10.2.min.js"}
     %script{:src => "/javascript/bootstrap/bootstrap.min.js"}
@@ -17,7 +18,7 @@
       #header
         #navigation.navbar.navbar-static-top{:role => "navigation"}
           .container
-            %ul.navbar.nav.navbar-nav
+            %ul.nav.navbar-nav
               %li
                 %a{:href => "/races", :title => "races"} races
               %li.dropdown
@@ -29,20 +30,22 @@
                   %ul.dropdown-menu
                     - tracks.each do |track|
                       %li
-                        %a{:href => "/tracks/#{track.id}/edit", :title => track}= track
+                        %a{:href => "/tracks/#{track.id}/edit", :title => "#{track}"}
+                          = track
                     - if tracks.any?
                       %li.divider
                     - if current_user
                       %li
-                        %a{:href => "/tracks/form", :title => "create new racetrack"}
+                        %a{:href => "/tracks/new", :title => "create new racetrack"}
                           %span create new racetrack
+            %ul.nav.navbar-nav.pull-right
               - if current_user
-                %li.pull-right
+                %li
                   %a{:href => "/logout", :title => "logout"} logout
-                %li.pull-right
+                %li
                   %a{:href => "/users/#{current_user.id}", :title => "#{current_user}"}= current_user
               - else
-                %li.dropdown.pull-right
+                %li.dropdown
                   %a.dropdown-toggle{:href => "#", :data => {"toggle" => "dropdown"}}
                     login
                   %ul.login-form.dropdown-menu

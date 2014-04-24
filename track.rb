@@ -1,3 +1,7 @@
 class Track < ActiveRecord::Base
-  attr_accessor :creator, :name
+  validates_presence_of :name, :creator
+
+  def to_s
+    name
+  end
 end
