@@ -27,6 +27,16 @@ label {
   }
 }
 
+#notifications {
+  .notification {
+    padding: 10px;
+
+  }
+}
+#footer {
+  height: 40px;
+}
+
 .table {
   display: table;
   .row {
@@ -35,6 +45,21 @@ label {
       display: table-cell;
     }
   }
+}
+
+.success {
+  background-color: #47a447;
+  border-color: #398439;
+}
+
+.notice {
+  background-color: #ed9c28;
+  border-color: #d58212;
+}
+
+.error {
+  background-color: #d2322d;
+  border-color: #ac2925;
 }
 
 .inline {
@@ -57,8 +82,4 @@ label {
       display: none;
     }
   }
-}
-
-#footer {
-  height: 40px;
 }

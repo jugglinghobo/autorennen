@@ -31,18 +31,28 @@
                   %li
                     %a{:href => "/tracks/form", :title => "create new racetrack"}
                       %span create new racetrack
-              %li.dropdown.pull-right
-                %a.dropdown-toggle{:href => "#", :data => {"toggle" => "dropdown"}}
-                  login
-                %ul.login-form.dropdown-menu
-                  %form{:action => "/login"}
-                    %li
-                      %input{:type => "text", :name => "user[username]", :placeholder => "username"}
-                    %li
-                      %input{:type => "password", :name => "user[password]", :placeholder => "password"}
-                    %li.pull-right
-                      %input.btn.btn-sm.btn-success{:type => "submit", :value => "login"}
-
+              - if current_user
+                %li.pull-right
+                  %a{:href => "/logout", :title => "logout"} logout
+                %li.pull-right
+                  %a{:href => "/users/#{current_user.id}", :title => "#{current_user}"}= current_user
+              - else
+                %li.dropdown.pull-right
+                  %a.dropdown-toggle{:href => "#", :data => {"toggle" => "dropdown"}}
+                    login
+                  %ul.login-form.dropdown-menu
+                    %form{:action => "/login", :method => "post"}
+                      %li
+                        %input{:type => "text", :name => "username", :placeholder => "username"}
+                      %li
+                        %input{:type => "password", :name => "password", :placeholder => "password"}
+                      %li.pull-right
+                        %input.btn.btn-sm.btn-success{:type => "submit", :value => "login"}
+      %ul#notifications
+        - flash.each do |key, message|
+          %li{:class => "notification #{flash_class(key)}"}
+            %button.close{:type => "button"} &times;
+            = message
       #content
         =yield
 
