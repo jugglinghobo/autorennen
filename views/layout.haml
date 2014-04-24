@@ -18,19 +18,24 @@
         #navigation.navbar.navbar-static-top{:role => "navigation"}
           .container
             %ul.navbar.nav.navbar-nav
+              %li
+                %a{:href => "/races", :title => "races"} races
               %li.dropdown
+                - tracks = Track.all
                 %a.dropdown-toggle{:href => "#", :data => {"toggle" => "dropdown"}}
                   racetracks
                   %b.caret
-                %ul.dropdown-menu
-                  - Track.all.each do |track|
-                    %li
-                      %a{:href => "/tracks/#{track.id}/edit", :title => track}= track
-                  - if Track.all.any?
-                    %li.divider
-                  %li
-                    %a{:href => "/tracks/form", :title => "create new racetrack"}
-                      %span create new racetrack
+                - if tracks.any? || current_user
+                  %ul.dropdown-menu
+                    - tracks.each do |track|
+                      %li
+                        %a{:href => "/tracks/#{track.id}/edit", :title => track}= track
+                    - if tracks.any?
+                      %li.divider
+                    - if current_user
+                      %li
+                        %a{:href => "/tracks/form", :title => "create new racetrack"}
+                          %span create new racetrack
               - if current_user
                 %li.pull-right
                   %a{:href => "/logout", :title => "logout"} logout
@@ -42,16 +47,17 @@
                     login
                   %ul.login-form.dropdown-menu
                     %form{:action => "/login", :method => "post"}
+                      %input{:type => "hidden", :name => "location", :value => request.path_info}
                       %li
                         %input{:type => "text", :name => "username", :placeholder => "username"}
                       %li
                         %input{:type => "password", :name => "password", :placeholder => "password"}
                       %li.pull-right
                         %input.btn.btn-sm.btn-success{:type => "submit", :value => "login"}
-      %ul#notifications
+      #notifications
         - flash.each do |key, message|
-          %li{:class => "notification #{flash_class(key)}"}
-            %button.close{:type => "button"} &times;
+          %div{:class => "notification #{flash_class(key)} alert-dismissable"}
+            %button.close{:type => "button", :data => {"dismiss" => "alert"}} &times;
             = message
       #content
         =yield

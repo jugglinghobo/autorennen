@@ -8,6 +8,7 @@ require 'sass'
 
 require './environment'
 require './user'
+require './race'
 require './track'
 
 enable :sessions
@@ -20,10 +21,10 @@ post '/login' do
   if (user = User.find_by_username(params[:username])) && (user.password == params[:password])
     login(user)
     flash[:success] = "logged in"
-    redirect to '/'
+    redirect to params[:location]
   else
     flash[:error] = "not logged in"
-    redirect to '/'
+    redirect to params[:location]
   end
 end
 
@@ -36,6 +37,11 @@ end
 get '/users/:id' do
   @user = User.find params[:id]
   haml :"users/form"
+end
+
+get '/races' do
+  @races = Race.all
+  haml :"races/index"
 end
 
 get '/tracks' do
@@ -71,9 +77,9 @@ end
 
 def flash_class(level)
   case level
-    when :notice then "bg-info"
-    when :success then "bg-success"
-    when :alert then "bg-warning"
-    when :error then "bg-danger"
+    when :notice then "alert alert-info"
+    when :success then "alert alert-success"
+    when :alert then "alert alert-warning"
+    when :error then "alert alert-danger"
   end
 end

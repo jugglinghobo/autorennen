@@ -1,25 +1,15 @@
 - if @track.persisted?
   - action = "/tracks/#{@track.id}/update"
-  - title = "edit #{@track}"
   - id = @track.id
 - else
   - action = "/tracks/create"
-  - title = "create a track"
   - id = 0
 
-%h1
-  = title
-  .pull-right
-    %form.inline{:action => "/tracks/#{@track.id}/delete", :method => "post"}
-      %input.btn.btn-danger{:type => "submit", :value => "delete", :onclick => "return confirm('Bot will be deleted. This can not be undone.')"}
 %form.track.track_form{:id => "track_#{id}", :action => action, :method => "post"}
   %ul
     %li.table
       .row
-        %input.track_name.cell.form-control{:type => "text", :name => "track[name]", :value => @track.name}
-    %li.table
-      .row
-        %input.track_creator.cell.form-control{:type => "text", :name => "track[creator]", :value => @track.creator}
+        %input.track_name.cell.form-control{:type => "text", :name => "track[name]", :placeholder => "new track", :value => @track.name}
     %li.table
       .row
     %li
