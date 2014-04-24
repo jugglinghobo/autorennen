@@ -63,27 +63,27 @@ post '/tracks/create' do
   if @track.valid?
     @track.save
     flash[:success] = "track saved"
-    redirect to "/tracks/#{@track.id}/edit"
+    @track.to_json
   else
     flash[:error] = "track could not be saved"
-    redirect to "/tracks/new"
+    {:result => "error"}.to_json
   end
 end
 
 post '/tracks/:id/update' do
   get_track
   if @track.update_attributes params[:track]
-    flash[:success] = "track saved"
-    redirect to "/tracks/#{@track.id}/edit"
+    #flash.now[:success] = "track saved"
+    @track.to_json(:methods => :boundaries)
   else
-    flash[:error] = "track could not be saved"
-    redirect to "/tracks/new"
+    #flash[:error] = "track could not be saved"
+    {:result => "error"}.to_json
   end
 end
 
 get '/tracks/:id.json' do
   get_track
-  @track.to_json
+  @track.to_json(:methods => :boundaries)
 end
 
 def get_track
