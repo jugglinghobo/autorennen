@@ -70,6 +70,17 @@ post '/tracks/create' do
   end
 end
 
+post '/tracks/:id/update' do
+  get_track
+  if @track.update_attributes params[:track]
+    flash[:success] = "track saved"
+    redirect to "/tracks/#{@track.id}/edit"
+  else
+    flash[:error] = "track could not be saved"
+    redirect to "/tracks/new"
+  end
+end
+
 get '/tracks/:id.json' do
   get_track
   @track.to_json

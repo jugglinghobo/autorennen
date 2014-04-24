@@ -30,10 +30,17 @@ function TrackForm(id) {
 }
 
 TrackForm.prototype.initialize = function() {
+  this.initializeFormListeners();
   this.loadTrackInformation();
   this.initializeGrid();
   this.renderGrid();
   this.initializeDrawListeners();
+}
+
+TrackForm.prototype.initializeFormListeners = function() {
+  $("#track-form").on("click", function() {
+
+  });
 }
 
 TrackForm.prototype.initializeDrawListeners = function() {
@@ -80,8 +87,6 @@ TrackForm.prototype.addClick = function(x, y, dragging) {
 TrackForm.prototype.render = function() {
   //this.context.clearRect(0, 0, this.canvas.width, this.canvas.height); // Clears the canvas
 
-  //this.renderGrid();
-
   this.context.strokeStyle = "#df4b26";
   this.context.lineJoin = "round";
   this.context.lineWidth = 5;
@@ -106,7 +111,7 @@ TrackForm.prototype.initializeGrid = function() {
   for(var x = 0; x < this.gridWidth; x++) {
     this.grid[x] = [];
     for (var y = 0; y < this.gridHeight; y++) {
-      var tile = new Tile(x, y, this.tileSize);
+      var tile = new Tile(x*this.tileSize, y*this.tileSize, this.tileSize);
       this.grid[x][y] = tile;
     };
   };

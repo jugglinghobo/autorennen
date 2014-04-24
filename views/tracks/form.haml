@@ -7,7 +7,7 @@
   - action = "/tracks/create"
   - css_id = 0
 
-%form.track.track-form.form-horizontal{:id => "track_#{css_id}", :action => action, :method => "post"}
+%form#track-form.track.form-horizontal{:id => "track_#{css_id}", :action => action, :method => "post"}
   %input#track-id.form-control{:type => "hidden", :name => "track[id]", :value => @track.id}
   %input#track-creator.form-control{:type => "hidden", :name => "track[creator]", :value => current_user.username}
   .container-fluid
@@ -17,6 +17,5 @@
         %input#track-name.form-control{:type => "text", :name => "track[name]", :placeholder => "new track", :value => @track.name}
       .col-xs-2.pull-right
         %input.pull-right.btn.btn-success{:type => "submit", :value => "save"}
-- if @track.persisted?
-  #track-container.center-block
-    %canvas#track
+#track-container.center-block
+  %canvas#track
