@@ -1,5 +1,7 @@
-%script{:src => "/javascript/track_form.js"}
+%script{:src => "/javascript/track.js"}
 %script{:src => "/javascript/tile.js"}
+%script{:src => "/javascript/track_form.js"}
+%script{:src => "/javascript/track_menu.js"}
 - if @track.persisted?
   - action = "/tracks/#{@track.id}/update"
   - css_id = @track.id
@@ -7,9 +9,9 @@
   - action = "/tracks/create"
   - css_id = 0
 
-%form.track.track-form.form-horizontal{:id => "track_#{css_id}", :action => action, :method => "post"}
+%form#track-form.track.form-horizontal{:action => action, :method => "post"}
   %input#track-id.form-control{:type => "hidden", :name => "track[id]", :value => @track.id}
-  %input#track-creator.form-control{:type => "hidden", :name => "track[creator]", :value => current_user.username}
+  %input#track-creator.form-control{:type => "hidden", :name => "track[creator]", :value => current_user}
   .container-fluid
     .form-group
       %label.col-xs-1.control-label{:for => "track-name"} Name:
@@ -17,6 +19,11 @@
         %input#track-name.form-control{:type => "text", :name => "track[name]", :placeholder => "new track", :value => @track.name}
       .col-xs-2.pull-right
         %input.pull-right.btn.btn-success{:type => "submit", :value => "save"}
-- if @track.persisted?
-  #track-container.center-block
-    %canvas#track
+#track-container.center-block
+  #track-menu
+    %ul.pull-right
+      %li
+        %a#clear.btn.btn-default.btn-sm{:href => "#", :title => "clear"} clear
+    .clearfix
+  %canvas#track
+

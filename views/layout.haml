@@ -26,18 +26,16 @@
                 %a.dropdown-toggle{:href => "#", :data => {"toggle" => "dropdown"}}
                   racetracks
                   %b.caret
-                - if tracks.any? || current_user
-                  %ul.dropdown-menu
-                    - tracks.each do |track|
-                      %li
-                        %a{:href => "/tracks/#{track.id}/edit", :title => "#{track}"}
-                          = track
-                    - if tracks.any?
-                      %li.divider
-                    - if current_user
-                      %li
-                        %a{:href => "/tracks/new", :title => "create new racetrack"}
-                          %span create new racetrack
+                %ul.dropdown-menu
+                  - tracks.each do |track|
+                    %li
+                      %a{:href => "/tracks/#{track.id}/edit", :title => "#{track}"}
+                        = track
+                  - if tracks.any?
+                    %li.divider
+                  %li
+                    %a{:href => "/tracks/new", :title => "create new racetrack"}
+                      %span create new racetrack
             %ul.nav.navbar-nav.pull-right
               - if current_user
                 %li
