@@ -2,6 +2,7 @@ require 'sinatra'
 require 'sinatra/activerecord'
 require 'sinatra/flash'
 require 'json'
+require 'pry'
 
 require 'haml'
 require 'sass'
@@ -10,11 +11,12 @@ require './environment'
 require './user'
 require './race'
 require './track'
+require './tile'
 
 enable :sessions
 
 get '/' do
-  haml :index
+  haml :"races/index"
 end
 
 post '/login' do
@@ -48,42 +50,65 @@ get '/tracks' do
   haml :tracks
 end
 
+get '/tracks/new.json' do
+  authenticate!
+  @track = Track.new
+  @track.to_json(:methods => :tile_grid)
+end
+
 get '/tracks/new' do
+  authenticate!
   @track = Track.new
   haml :"tracks/form"
 end
 
 get '/tracks/:id/edit' do
+  authenticate!
   get_track
   haml :"tracks/form"
 end
 
 post '/tracks/create' do
+  authenticate!
   @track = Track.new params[:track]
   if @track.valid?
     @track.save
     flash[:success] = "track saved"
-    @track.to_json
+    redirect to "tracks/#{@track.id}/edit"
   else
     flash[:error] = "track could not be saved"
-    {:result => "error"}.to_json
+    redirect to "/tracks/new"
   end
 end
 
 post '/tracks/:id/update' do
   get_track
+  puts params[:track]
   if @track.update_attributes params[:track]
-    #flash.now[:success] = "track saved"
-    @track.to_json(:methods => :boundaries)
+    flash.now[:success] = "track saved"
+    redirect to "/tracks/edit"
   else
-    #flash[:error] = "track could not be saved"
-    {:result => "error"}.to_json
+    flash[:error] = "track could not be saved"
+    redirect to "/tracks/edit"
   end
 end
 
 get '/tracks/:id.json' do
   get_track
-  @track.to_json(:methods => :boundaries)
+  @track.to_json(:methods => :tile_grid)
+end
+
+get '/tracks/:id' do
+  get_track
+  haml :"tracks/show"
+end
+
+
+def authenticate!
+  unless current_user
+    flash[:error] = "you need to login for this action"
+    redirect to "/"
+  end
 end
 
 def get_track

@@ -2,6 +2,7 @@ require 'bcrypt'
 
 class User < ActiveRecord::Base
   include BCrypt
+  has_many :tracks
 
   validates :username, :password_hash, :presence => true
 

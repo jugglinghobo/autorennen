@@ -1,4 +1,4 @@
-.orig
+*.orig
 *.gem
 *.rbc
 /.config

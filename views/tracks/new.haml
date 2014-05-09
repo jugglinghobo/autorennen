@@ -1,0 +1,19 @@
+%script{:src => "/javascript/new_track.js"}
+%form#track-form.track.form-horizontal{:action => "/tracks/create", :method => "post"}
+  %input#track-creator.form-control{:type => "hidden", :name => "track[creator]", :value => current_user}
+  .container-fluid
+    .col-xs-2.pull-right
+      %input.pull-right.btn.btn-success{:type => "submit", :value => "save"}
+    .form-group
+      %label.col-xs-1.control-label{:for => "track-name"} Name:
+      .col-xs-4
+        %input#track-name.form-control{:type => "text", :name => "track[name]", :placeholder => "new track", :value => @track.name}
+    .form-group
+      %label.col-xs-1.control-label{:for => "track-width"} Width:
+      .col-xs-4
+        %input#track-width.form-control{:type => "text", :width => "track[width]", :placeholder => "new track", :value => @track.width}
+    .form-group
+      %label.col-xs-1.control-label{:for => "track-height"} Height:
+      .col-xs-4
+        %input#track-height.form-control{:type => "text", :height => "track[height]", :placeholder => "new track", :value => @track.height}
+
