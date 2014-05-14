@@ -1,4 +1,5 @@
 class Track < ActiveRecord::Base
+  INT_ATTRS = ["x", "y", "column", "row", "size"]
   validates_presence_of :name, :creator
 
   belongs_to :creator, :class_name => "User"
@@ -14,7 +15,7 @@ class Track < ActiveRecord::Base
   def tiles=(tiles_hash)
     tiles_hash.values.each do |tile|
       tile.each do |attribute, value|
-        tile[attribute] = value.to_i
+        tile[attribute] = value.to_i if INT_ATTRS.include?(attribute)
       end
     end
 

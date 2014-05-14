@@ -14,21 +14,16 @@ function Track(id) {
   this.canvas;
   this.context;
   this.tileGrid;
-  window.crack = this;
+  this.pickups;
   this.initialize();
+  window.crack = this;
 };
 
 Track.prototype.initialize = function() {
   this.loadData();
   this.loadCanvas();
+  this.loadPickups();
   this.render();
-};
-
-Track.prototype.loadCanvas = function() {
-  this.canvas = document.getElementById("track");
-  this.canvas.width = this.width;
-  this.canvas.height = this.height;
-  this.context = this.canvas.getContext("2d");
 };
 
 Track.prototype.loadData = function() {
@@ -40,6 +35,23 @@ Track.prototype.loadData = function() {
     async: false,
   }).success(function(data) {
     track.setData(data);
+  });
+};
+
+Track.prototype.loadCanvas = function() {
+  this.canvas = document.getElementById("track");
+  this.canvas.width = this.width;
+  this.canvas.height = this.height;
+  this.context = this.canvas.getContext("2d");
+};
+
+Track.prototype.loadPickups = function() {
+  var pickupIds = ["pickup-booster", "pickup-rocket", "pickup-mine"]
+  this.pickups = {};
+
+  var track = this;
+  pickupIds.forEach(function(id) {
+    track.pickups[id] = document.getElementById(id);
   });
 };
 
@@ -71,6 +83,58 @@ Track.prototype.buildGrid = function(tiles) {
   return tileGrid;
 };
 
+Track.prototype.tiles = function() {
+  var tiles = [];
+  for(c = 0; c < this.columns; c++) {
+    for(r = 0; r < this.rows; r++) {
+      var tile = this.tileGrid[c][r];
+      if (tile) {
+        tiles.push(tile);
+      };
+    };
+  };
+  return tiles;
+};
+
+Track.prototype.addTile = function(tile) {
+  // add to grid
+  this.tileGrid[tile.column] = this.tileGrid[tile.column] || [];
+  this.tileGrid[tile.column][tile.row] = tile;
+  this.render();
+};
+
+Track.prototype.removeTileAt = function(column, row) {
+  this.tileGrid[column][row] = undefined;
+  this.render();
+}
+
+Track.prototype.addPickupAt = function(column, row, pickup) {
+  var tile = this.tileGrid[column][row];
+  tile.pickup = pickup;
+  this.render();
+}
+
+Track.prototype.clear = function() {
+  for(c = 0; c < this.columns; c++) {
+    for(r = 0; r < this.rows; r++) {
+      this.tileGrid[c][r] = undefined;
+    };
+  };
+  this.render();
+};
+
+Track.prototype.loadPath = function() {
+  if (this.id) {
+    return "/tracks/"+this.id+".json";
+  } else {
+    return "/tracks/new.json";
+  };
+};
+
+// ====================================
+// RENDERING
+// ====================================
+
 Track.prototype.render = function() {
   this.renderGrid();
 };
@@ -92,54 +156,22 @@ Track.prototype.renderGrid = function() {
   };
 };
 
-Track.prototype.tiles = function() {
-  var tiles = [];
-  for(c = 0; c < this.columns; c++) {
-    for(r = 0; r < this.rows; r++) {
-      var tile = this.tileGrid[c][r];
-      if (tile) {
-        tiles.push(tile);
-      };
-    };
-  };
-  return tiles;
-};
-
 Track.prototype.renderTile = function(tile) {
   var x = tile.x+0.5;
   var y = tile.y+0.5;
   var size = tile.size;
-  this.context.fillStyle = "#eee";
-  this.context.fillRect(x, y, size, size);
-  this.context.fillStyle = "black";
+
+  // tile
+  if (tile.pickup) {
+    var pickupImg = this.pickups[tile.pickup];
+    this.context.drawImage(pickupImg, x, y, size, size);
+  } else {
+    this.context.fillStyle = "#eee";
+    this.context.fillRect(x, y, size, size);
+    this.context.fillStyle = "black";
+  }
+
+  // border
   this.context.strokeRect(x, y, size, size);
 };
 
-Track.prototype.addTile = function(tile) {
-  // add to grid
-  this.tileGrid[tile.column] = this.tileGrid[tile.column] || [];
-  this.tileGrid[tile.column][tile.row] = tile;
-  this.render();
-};
-
-Track.prototype.removeTileAt = function(column, row) {
-  this.tileGrid[column][row] = undefined;
-  this.render();
-}
-
-Track.prototype.clear = function() {
-  for(c = 0; c < this.columns; c++) {
-    for(r = 0; r < this.rows; r++) {
-      this.tileGrid[c][r] = undefined;
-    };
-  };
-  this.render();
-};
-
-Track.prototype.loadPath = function() {
-  if (this.id) {
-    return "/tracks/"+this.id+".json";
-  } else {
-    return "/tracks/new.json";
-  };
-};

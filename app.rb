@@ -86,13 +86,10 @@ post '/tracks/create' do
   @track = Track.new params[:track]
   if @track.valid?
     @track.save
-    puts "SUCCESS"
     flash[:success] = "track saved"
     @track.to_json
   else
-    puts "ERROR"
-    flash[:error] = "ERROR: track could not be saved"
-    @track.to_json
+    {:message => "track could not be saved", :error => true, :status => 400}.to_json
   end
 end
 
@@ -101,13 +98,10 @@ post '/tracks/:id/update' do
   preprocess_tile_params!
   get_track
   if @track.update_attributes params[:track]
-    puts "SUCCESS"
     flash[:success] = "track saved"
     @track.to_json
   else
-    puts "ERROR"
-    flash[:error] = "ERROR: track could not be saved"
-    @track.to_json
+    {:message => "track could not be saved", :error => true, :status => 400}.to_json
   end
 end
 

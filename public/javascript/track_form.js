@@ -25,18 +25,17 @@ TrackForm.prototype.initializeFormListeners = function() {
       dataType: "json",
       method: 'POST',
       data: data,
-      async: false,
     }).success(function(data) {
-      var id = data.id;
-      var url = "/tracks/new";
-      if (id) {
-        url = "/tracks/"+id+"/edit";
-      };
-      if (window.location.href == url) {
-        window.location.reload();
+      if (data.error) {
+        handleError(data);
       } else {
+        var id = data.id;
+        var url = "/tracks/"+id+"/edit";
+
         window.location.href = url;
-      }
+      };
+    }).error(function(data) {
+      handleError(data);
     });
   });
 }

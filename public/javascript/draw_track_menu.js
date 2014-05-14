@@ -10,12 +10,11 @@ function DrawTrackMenu(track, canvas) {
   // the trackMenu if we extract the eventHandling code otherwise. See
   // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget.addEventListener#The_value_of_this_within_the_handler
   this.handleEvent = function(event) {
-    var canvas = event.currentTarget;
     switch(event.type) {
 
       case 'mousedown':
-        var mouseX = event.pageX - canvas.offsetLeft;
-        var mouseY = event.pageY - canvas.offsetTop;
+        var mouseX = event.pageX - this.canvas.offsetLeft;
+        var mouseY = event.pageY - this.canvas.offsetTop;
         this.mouseX = mouseX;
         this.mouseY = mouseY;
         this.drawing = true;
@@ -24,8 +23,8 @@ function DrawTrackMenu(track, canvas) {
 
       case 'mousemove':
         if(this.drawing) {
-          var mouseX = event.pageX - canvas.offsetLeft;
-          var mouseY = event.pageY - canvas.offsetTop;
+          var mouseX = event.pageX - this.canvas.offsetLeft;
+          var mouseY = event.pageY - this.canvas.offsetTop;
           this.addTile(mouseX, mouseY, true);
         }
       break;

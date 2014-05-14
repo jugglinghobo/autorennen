@@ -22,16 +22,22 @@ MenuManager.prototype.initializeMenuListeners = function() {
   $("#track-menu").on("change", "#booster", function(e) {
     e.preventDefault();
     menu.disableActiveMenu();
-    menu.activeMenu = new PickupMenu(menu.track, menu.canvas, "#pickup-booster");
+    menu.activeMenu = new PickupMenu(menu.track, menu.canvas, "pickup-booster");
   });
 
   $("#track-menu").on("change", "#rocket", function(e) {
     e.preventDefault();
     menu.disableActiveMenu();
-    menu.activeMenu = new PickupMenu(menu.track, menu.canvas, "#pickup-rocket");
+    menu.activeMenu = new PickupMenu(menu.track, menu.canvas, "pickup-rocket");
   });
 
-  $("#track-menu").on("change", "#clear", function(e) {
+  $("#track-menu").on("change", "#mine", function(e) {
+    e.preventDefault();
+    menu.disableActiveMenu();
+    menu.activeMenu = new PickupMenu(menu.track, menu.canvas, "pickup-mine");
+  });
+
+  $("#track-menu").on("click", "#clear", function(e) {
     e.preventDefault();
     menu.track.clear();
   });
