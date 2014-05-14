@@ -46,7 +46,7 @@ Track.prototype.loadCanvas = function() {
 };
 
 Track.prototype.loadPickups = function() {
-  var pickupIds = ["pickup-booster", "pickup-rocket", "pickup-mine"]
+  var pickupIds = ["pickup-finish", "pickup-booster", "pickup-rocket", "pickup-mine"]
   this.pickupSources = {};
 
   var track = this;
@@ -170,7 +170,7 @@ Track.prototype.renderTile = function(tile) {
     pickupImg.src = this.pickupSources[tile.pickup];
     var track = this;
     pickupImg.onload = function() {
-      track.context.drawImage(this, x, y, size, size);
+      track.context.drawImage(this, x+0.5, y+0.5, size-1, size-1);
     }
   } else {
     this.context.fillStyle = "#eee";

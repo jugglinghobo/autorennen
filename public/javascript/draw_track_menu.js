@@ -2,9 +2,7 @@ function DrawTrackMenu(track, canvas) {
   this.track = track;
   this.canvas = canvas;
   this.tileSize = track.tileSize;
-  this.mouseX;
-  this.mouseY;
-  this.drawing;
+  this.dragging;
 
   // special handleEvent function, because we'd lose the reference to
   // the trackMenu if we extract the eventHandling code otherwise. See
@@ -15,14 +13,12 @@ function DrawTrackMenu(track, canvas) {
       case 'mousedown':
         var mouseX = event.pageX - this.canvas.offsetLeft;
         var mouseY = event.pageY - this.canvas.offsetTop;
-        this.mouseX = mouseX;
-        this.mouseY = mouseY;
-        this.drawing = true;
-        this.addTile(this.mouseX, this.mouseY, false);
+        this.dragging = true;
+        this.addTile(mouseX, mouseY, false);
       break;
 
       case 'mousemove':
-        if(this.drawing) {
+        if(this.dragging) {
           var mouseX = event.pageX - this.canvas.offsetLeft;
           var mouseY = event.pageY - this.canvas.offsetTop;
           this.addTile(mouseX, mouseY, true);
@@ -30,11 +26,11 @@ function DrawTrackMenu(track, canvas) {
       break;
 
       case 'mouseup':
-        this.drawing = false;
+        this.dragging = false;
       break;
 
       case 'mouseleave':
-        this.drawing = false;
+        this.dragging = false;
       break;
     }
   }

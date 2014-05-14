@@ -19,6 +19,12 @@ MenuManager.prototype.initializeMenuListeners = function() {
     menu.activeMenu = new EraseTrackMenu(menu.track, menu.canvas, true);
   });
 
+  $("#track-menu").on("change", "#finish", function(e) {
+    e.preventDefault();
+    menu.disableActiveMenu();
+    menu.activeMenu = new PickupMenu(menu.track, menu.canvas, "pickup-finish");
+  });
+
   $("#track-menu").on("change", "#booster", function(e) {
     e.preventDefault();
     menu.disableActiveMenu();
