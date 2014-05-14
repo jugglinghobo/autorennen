@@ -47,11 +47,11 @@ Track.prototype.loadCanvas = function() {
 
 Track.prototype.loadPickups = function() {
   var pickupIds = ["pickup-booster", "pickup-rocket", "pickup-mine"]
-  this.pickups = {};
+  this.pickupSources = {};
 
   var track = this;
   pickupIds.forEach(function(id) {
-    track.pickups[id] = document.getElementById(id);
+    track.pickupSources[id] = document.getElementById(id).src;
   });
 };
 
@@ -163,8 +163,13 @@ Track.prototype.renderTile = function(tile) {
 
   // tile
   if (tile.pickup) {
-    var pickupImg = this.pickups[tile.pickup];
-    this.context.drawImage(pickupImg, x, y, size, size);
+    //debugger;
+    var pickupImg = new Image();
+    pickupImg.src = this.pickupSources[tile.pickup];
+    var track = this;
+    pickupImg.onload = function() {
+      track.context.drawImage(this, x, y, size, size);
+    }
   } else {
     this.context.fillStyle = "#eee";
     this.context.fillRect(x, y, size, size);

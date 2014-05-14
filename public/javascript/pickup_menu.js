@@ -32,9 +32,9 @@ PickupMenu.prototype.addPickupAt = function(mouseX, mouseY) {
 };
 
 PickupMenu.prototype.disable = function() {
-  this.removeDrawTrackEventListeners();
+  this.removePickupEventListeners();
 };
 
-PickupMenu.prototype.removePickupEventListener = function() {
+PickupMenu.prototype.removePickupEventListeners = function() {
   this.canvas.removeEventListener("mousedown", this);
 }
