@@ -110,8 +110,10 @@ Track.prototype.removeTileAt = function(column, row) {
 
 Track.prototype.addPickupAt = function(column, row, pickup) {
   var tile = this.tileGrid[column][row];
-  tile.pickup = pickup;
-  this.render();
+  if (tile) {
+    tile.pickup = pickup;
+    this.render();
+  }
 }
 
 Track.prototype.clear = function() {
