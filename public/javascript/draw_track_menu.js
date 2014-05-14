@@ -1,4 +1,4 @@
-function TrackMenu(track, canvas) {
+function DrawTrackMenu(track, canvas) {
   this.track = track;
   this.canvas = canvas;
   this.tileSize = track.tileSize;
@@ -39,34 +39,33 @@ function TrackMenu(track, canvas) {
       break;
     }
   }
-  this.addTrackEventListeners();
+  this.addDrawTrackEventListeners();
 }
 
-TrackMenu.prototype.addTrackEventListeners = function() {
+DrawTrackMenu.prototype.addDrawTrackEventListeners = function() {
   this.canvas.addEventListener("mousedown", this);
   this.canvas.addEventListener("mousemove", this);
   this.canvas.addEventListener("mouseup", this);
   this.canvas.addEventListener("mouseleave", this);
 }
 
-TrackMenu.prototype.disable = function() {
-  this.removeTrackEventListeners();
+DrawTrackMenu.prototype.disable = function() {
+  this.removeDrawTrackEventListeners();
 }
 
-TrackMenu.prototype.removeTrackEventListeners = function() {
+DrawTrackMenu.prototype.removeDrawTrackEventListeners = function() {
   this.canvas.removeEventListener("mousedown", this);
   this.canvas.removeEventListener("mousemove", this);
   this.canvas.removeEventListener("mouseup", this);
   this.canvas.removeEventListener("mouseleave", this);
 }
 
-TrackMenu.prototype.addTile = function(mouseX, mouseY, dragged) {
+DrawTrackMenu.prototype.addTile = function(mouseX, mouseY, dragged) {
   var x = Math.floor(mouseX / this.tileSize) * this.tileSize;
   var y = Math.floor(mouseY / this.tileSize) * this.tileSize;
   var col = x/this.tileSize;
   var row = y/this.tileSize;
   var tile = new Tile(col, row, x, y, this.tileSize);
   this.track.addTile(tile);
-  this.track.render();
 };
 

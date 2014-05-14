@@ -109,6 +109,9 @@ Track.prototype.renderTile = function(tile) {
   var x = tile.x+0.5;
   var y = tile.y+0.5;
   var size = tile.size;
+  this.context.fillStyle = "#eee";
+  this.context.fillRect(x, y, size, size);
+  this.context.fillStyle = "black";
   this.context.strokeRect(x, y, size, size);
 };
 
@@ -116,7 +119,13 @@ Track.prototype.addTile = function(tile) {
   // add to grid
   this.tileGrid[tile.column] = this.tileGrid[tile.column] || [];
   this.tileGrid[tile.column][tile.row] = tile;
+  this.render();
 };
+
+Track.prototype.removeTileAt = function(column, row) {
+  this.tileGrid[column][row] = undefined;
+  this.render();
+}
 
 Track.prototype.clear = function() {
   for(c = 0; c < this.columns; c++) {

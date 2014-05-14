@@ -2,7 +2,8 @@
 %script{:src => "/javascript/tile.js"}
 %script{:src => "/javascript/track_form.js"}
 %script{:src => "/javascript/menu_manager.js"}
-%script{:src => "/javascript/track_menu.js"}
+%script{:src => "/javascript/draw_track_menu.js"}
+%script{:src => "/javascript/erase_track_menu.js"}
 %script{:src => "/javascript/pickup_menu.js"}
 - if @track.persisted?
   - action = "/tracks/#{@track.id}/update"
@@ -23,19 +24,24 @@
         %input.pull-right.btn.btn-success{:type => "submit", :value => "save"}
 #track-container.center-block
   #track-menu
-    %div.btn-group{:data => {"toggle" => "buttons"}}
-      %label.btn.btn-default.active
-        draw track
-        %input#draw-track{:type => "radio", :name => "draw track", :checked => "checked"}
-      %label.btn.btn-default
-        booster
-        %input#booster{:type => "radio", :name => "booster"}
-      %label.btn.btn-default
-        rocket
-        %input#rocket{:type => "radio", :name => "rocket"}
-      %label.btn.btn-default
-        mine
-        %input#mine{:type => "radio", :name => "mine"}
-    %button#clear.btn.btn-default.pull-right clear
+    %div.btn-toolbar
+      %div.btn-group{:data => {"toggle" => "buttons"}}
+        %label.btn.btn-default.active
+          draw track
+          %input#draw-track{:type => "radio", :name => "draw track", :checked => "checked"}
+        %label.btn.btn-default
+          erase track
+          %input#erase-track{:type => "radio", :name => "erase track"}
+        %label.btn.btn-default
+          booster
+          %input#booster{:type => "radio", :name => "booster"}
+        %label.btn.btn-default
+          rocket
+          %input#rocket{:type => "radio", :name => "rocket"}
+        %label.btn.btn-default
+          mine
+          %input#mine{:type => "radio", :name => "mine"}
+      %div.btn-group.pull-right
+        %button#clear.btn.btn-default clear
   %canvas#track
 

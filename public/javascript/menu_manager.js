@@ -1,7 +1,7 @@
 function MenuManager(track) {
   this.track = track;
   this.canvas = this.track.canvas;
-  this.activeMenu = new TrackMenu(this.track, this.canvas);
+  this.activeMenu = new DrawTrackMenu(this.track, this.canvas);
   this.initializeMenuListeners();
 }
 
@@ -10,7 +10,13 @@ MenuManager.prototype.initializeMenuListeners = function() {
   $("#track-menu").on("change", "#draw-track", function(e) {
     e.preventDefault();
     menu.disableActiveMenu();
-    menu.activeMenu = new TrackMenu(menu.track, menu.canvas);
+    menu.activeMenu = new DrawTrackMenu(menu.track, menu.canvas);
+  });
+
+  $("#track-menu").on("change", "#erase-track", function(e) {
+    e.preventDefault();
+    menu.disableActiveMenu();
+    menu.activeMenu = new EraseTrackMenu(menu.track, menu.canvas, true);
   });
 
   $("#track-menu").on("change", "#booster", function(e) {
