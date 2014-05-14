@@ -29,10 +29,10 @@
             %label.control-label{:for => "track-rows"} Rows:
             %input#track-rows.form-control{:type => "text", :name => "track[rows]", :value => @track.rows}
           .form-group
-            %input.form-control.btn.btn-success{:type => "submit", :value => "save"}
+            %input.form-control.btn.btn-success{:type => "submit", :value => "save", :accesskey => "s"}
 
       .col-md-2
-        %form.form-inline{:action => "/tracks/#{@track.id}/delete"}
+        %form#delete-track-form.form-inline{:action => "/tracks/#{@track.id}/delete", :method => "post"}
           .form-group.pull-right
             %input.form-control.btn.btn-danger{:type => "submit", :value => "delete"}
   %hr

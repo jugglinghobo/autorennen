@@ -16,6 +16,16 @@ TrackForm.prototype.initialize = function() {
 
 TrackForm.prototype.initializeFormListeners = function() {
   var trackForm = this;
+
+  // add cmd+s keyboard save listener
+  document.addEventListener("keydown", function(e) {
+    if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey))      {
+      e.preventDefault();
+      $("#track-form").submit();
+    };
+  }, false);
+
+  // submit form via ajax on submit
   $("#track-form").on("submit", function(e) {
     e.preventDefault();
     var path = $(this).attr("action");
@@ -37,6 +47,10 @@ TrackForm.prototype.initializeFormListeners = function() {
     }).error(function(data) {
       handleError(data);
     });
+  });
+
+  $("#delete-track-form").on("submit", function() {
+    return confirm("This can not be undone. Delete track?")
   });
 }
 

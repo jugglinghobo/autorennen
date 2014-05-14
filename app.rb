@@ -105,6 +105,18 @@ post '/tracks/:id/update' do
   end
 end
 
+post '/tracks/:id/delete' do
+  authenticate!
+  get_track
+  if @track.destroy
+    flash[:success] = "track deleted"
+    redirect to '/'
+  else
+    {:message => "track could not be deleted", :error => true, :status => 400}.to_json
+  end
+end
+
+
 get '/tracks/:id.json' do
   get_track
   @track.to_json(:methods => :tile_grid)
