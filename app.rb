@@ -3,6 +3,7 @@ require 'sinatra/activerecord'
 require 'sinatra/flash'
 require 'json'
 require 'pry'
+require 'logger'
 
 require 'haml'
 require 'sass'
@@ -12,6 +13,17 @@ require './user'
 require './race'
 require './track'
 require './tile'
+
+
+Dir.mkdir('logs') unless File.exist?('logs')
+$log = Logger.new('logs/output.log','weekly')
+
+configure :production do
+  $log.level = Logger::WARN
+end
+configure :development do
+  $log.level = Logger::DEBUG
+end
 
 enable :sessions
 
@@ -53,7 +65,7 @@ end
 get '/tracks/new.json' do
   authenticate!
   @track = Track.new
-  @track.to_json(:methods => :tile_grid)
+  @track.to_json
 end
 
 get '/tracks/new' do
@@ -70,26 +82,32 @@ end
 
 post '/tracks/create' do
   authenticate!
+  preprocess_tile_params!
   @track = Track.new params[:track]
   if @track.valid?
     @track.save
+    puts "SUCCESS"
     flash[:success] = "track saved"
-    redirect to "tracks/#{@track.id}/edit"
+    @track.to_json
   else
-    flash[:error] = "track could not be saved"
-    redirect to "/tracks/new"
+    puts "ERROR"
+    flash[:error] = "ERROR: track could not be saved"
+    @track.to_json
   end
 end
 
 post '/tracks/:id/update' do
+  authenticate!
+  preprocess_tile_params!
   get_track
-  puts params[:track]
   if @track.update_attributes params[:track]
-    flash.now[:success] = "track saved"
-    redirect to "/tracks/edit"
+    puts "SUCCESS"
+    flash[:success] = "track saved"
+    @track.to_json
   else
-    flash[:error] = "track could not be saved"
-    redirect to "/tracks/edit"
+    puts "ERROR"
+    flash[:error] = "ERROR: track could not be saved"
+    @track.to_json
   end
 end
 
@@ -109,6 +127,10 @@ def authenticate!
     flash[:error] = "you need to login for this action"
     redirect to "/"
   end
+end
+
+def preprocess_tile_params!
+  params[:track][:tiles] ||= {}
 end
 
 def get_track

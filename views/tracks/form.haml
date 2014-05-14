@@ -11,7 +11,7 @@
 
 %form#track-form.track.form-horizontal{:action => action, :method => "post"}
   %input#track-id.form-control{:type => "hidden", :name => "track[id]", :value => @track.id}
-  %input#track-creator.form-control{:type => "hidden", :name => "track[creator]", :value => current_user}
+  %input#track-creator-id.form-control{:type => "hidden", :name => "track[creator-id]", :value => current_user.id}
   .container-fluid
     .form-group
       %label.col-xs-1.control-label{:for => "track-name"} Name:

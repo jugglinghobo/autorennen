@@ -6,6 +6,7 @@ class CreateTracks < ActiveRecord::Migration
      t.integer :rows, :default => 60
      t.integer :tile_size, :default => 15
      t.references :creator
+     t.text :tiles, :default => "[]"
      t.timestamps
    end
  end

@@ -8,7 +8,8 @@ gem 'sinatra-activerecord', '~> 1.7.0'
 gem 'sinatra-flash', '~> 0.3.0'
 gem 'json', '~> 1.8.1'
 gem 'rake', '~> 10.2.2'
-gem 'pry-byebug', '~> 1.3.2'
+gem 'pry', '~> 0.9.12.6'
+gem 'pry-nav', '~> 0.2.3'
 
 gem 'bcrypt', '~> 3.1.7'
 

@@ -46,7 +46,7 @@ Track.prototype.loadData = function() {
 Track.prototype.update = function(data) {
   this.setData(data);
   this.render();
-}
+};
 
 Track.prototype.setData = function(data) {
   this.name = data.name;
@@ -56,7 +56,19 @@ Track.prototype.setData = function(data) {
   this.tileSize = data.tile_size;
   this.width = this.columns * this.tileSize;
   this.height = this.rows * this.tileSize;
-  this.tileGrid = data.tile_grid;
+  this.tileGrid = this.buildGrid(data.tiles);
+};
+
+Track.prototype.buildGrid = function(tiles) {
+  var tileGrid = [];
+  for(var c = 0; c < this.columns; c++) {
+    tileGrid[c] = [];
+    for (var r = 0; r < this.rows; r++) {
+      var tile = $.grep(tiles, function(tile) { return (tile.column == c && tile.row == r) })[0];
+      tileGrid[c][r] = tile;
+    };
+  };
+  return tileGrid;
 };
 
 Track.prototype.render = function() {
@@ -70,14 +82,27 @@ Track.prototype.renderGrid = function() {
   this.context.strokeRect(0+0.5, 0+0.5, this.canvas.width-0.5, this.canvas.height-0.5);
 
   // stroke non-track tiles
-  for(col = 0; col < this.columns; col++) {
-    for(row = 0; row < this.rows; row++) {
-      var tile = this.tileGrid[col][row];
+  for(c = 0; c < this.columns; c++) {
+    for(r = 0; r < this.rows; r++) {
+      var tile = this.tileGrid[c][r];
       if(tile) {
-        this.renderTile(tile)
+        this.renderTile(tile);
       };
     };
   };
+};
+
+Track.prototype.tiles = function() {
+  var tiles = [];
+  for(c = 0; c < this.columns; c++) {
+    for(r = 0; r < this.rows; r++) {
+      var tile = this.tileGrid[c][r];
+      if (tile) {
+        tiles.push(tile);
+      };
+    };
+  };
+  return tiles;
 };
 
 Track.prototype.renderTile = function(tile) {
@@ -85,23 +110,22 @@ Track.prototype.renderTile = function(tile) {
   var y = tile.y+0.5;
   var size = tile.size;
   this.context.strokeRect(x, y, size, size);
-}
+};
 
 Track.prototype.addTile = function(tile) {
-  if (!this.tileGrid[tile.column][tile.row]) {
-    this.tileGrid[tile.column][tile.row] = tile;
-    console.log(""+tile.column+", "+tile.row);
-  };
-}
+  // add to grid
+  this.tileGrid[tile.column] = this.tileGrid[tile.column] || [];
+  this.tileGrid[tile.column][tile.row] = tile;
+};
 
 Track.prototype.clear = function() {
-  for(col = 0; col < this.columns; col++) {
-    for(row = 0; row < this.rows; row++) {
-      this.tileGrid[col][row] = null;
+  for(c = 0; c < this.columns; c++) {
+    for(r = 0; r < this.rows; r++) {
+      this.tileGrid[c][r] = undefined;
     };
   };
   this.render();
-}
+};
 
 Track.prototype.loadPath = function() {
   if (this.id) {

@@ -44,15 +44,15 @@
                   %a{:href => "/users/#{current_user.id}", :title => "#{current_user}"}= current_user
               - else
                 %li.dropdown
-                  %a.dropdown-toggle{:href => "#", :data => {"toggle" => "dropdown"}}
+                  %a#login.dropdown-toggle{:href => "#", :data => {"toggle" => "dropdown"}}
                     login
                   %ul.login-form.dropdown-menu
                     %form{:action => "/login", :method => "post"}
                       %input{:type => "hidden", :name => "location", :value => request.path_info}
                       %li
-                        %input{:type => "text", :name => "username", :placeholder => "username"}
+                        %input#username{:type => "text", :name => "username", :placeholder => "username"}
                       %li
-                        %input{:type => "password", :name => "password", :placeholder => "password"}
+                        %input#password{:type => "password", :name => "password", :placeholder => "password"}
                       %li.pull-right
                         %input.btn.btn-sm.btn-success{:type => "submit", :value => "login"}
       #notifications
