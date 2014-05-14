@@ -3,3 +3,7 @@ function PickupMenu(track, canvas, pickupId) {
   this.canvas = canvas;
   this.pickup = $(pickupId);
 }
+
+PickupMenu.prototype.disable = function() {
+
+}

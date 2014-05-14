@@ -49,8 +49,7 @@ TrackMenu.prototype.addTrackEventListeners = function() {
   this.canvas.addEventListener("mouseleave", this);
 }
 
-TrackMenu.prototype.clear = function() {
-  console.log("CLEAR");
+TrackMenu.prototype.disable = function() {
   this.removeTrackEventListeners();
 }
 

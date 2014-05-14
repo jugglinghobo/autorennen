@@ -24,9 +24,9 @@
 #track-container.center-block
   #track-menu
     %div.btn-group{:data => {"toggle" => "buttons"}}
-      %label.btn.btn-default
+      %label.btn.btn-default.active
         draw track
-        %input#draw-track{:type => "radio", :name => "draw track"}
+        %input#draw-track{:type => "radio", :name => "draw track", :checked => "checked"}
       %label.btn.btn-default
         booster
         %input#booster{:type => "radio", :name => "booster"}
