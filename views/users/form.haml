@@ -1,1 +1,31 @@
-= @user
+%script{:src => "/javascript/bootstrap/bootstrap-colorpicker.js"}
+%script{:src => "/javascript/user_form.js"}
+
+#user-container
+  %form#user-form.form-horizontal{:action => "/users/#{@user.id}/update", :method => "post"}
+    .container-fluid
+      .row
+        .col-md-10
+          .form-group
+            %label.control-label.col-md-2{:for => "user-username"} Username:
+            .col-md-5
+              %input#user-username.form-control{:type => "text", :name => "user[username]", :value => @user.username}
+        .col-md-2
+          .form-group.pull-right
+            %input.btn.btn-success{:type => "submit", :value => "save"}
+      .row
+        .col-md-10
+          .form-group
+            %label.control-label.col-md-2{:for => "user-teamname"} Teamname:
+            .col-md-5
+              %input#user-teamname.form-control{:type => "text", :name => "user[teamname]", :value => @user.teamname}
+      .row
+        .col-md-10
+          .form-group
+            %label.control-label.col-md-2{:for => "user-color"} Color:
+            .col-md-5
+              .input-group.color{:data => {"color-format" => "hex"}}
+                .input-group-btn
+                  %button.btn.btn-default.dropdown-toggle{:type => "button", :style =>  "background-color: #{@user.color}", :data => {:toggle => "dropdown"}}
+                    %span.caret
+                %input#user-color.inline.form-control{:type => "text", :name => "user[color]", :value => @user.color}

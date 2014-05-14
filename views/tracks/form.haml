@@ -32,9 +32,10 @@
             %input.form-control.btn.btn-success{:type => "submit", :value => "save", :accesskey => "s"}
 
       .col-md-2
-        %form#delete-track-form.form-inline{:action => "/tracks/#{@track.id}/delete", :method => "post"}
-          .form-group.pull-right
-            %input.form-control.btn.btn-danger{:type => "submit", :value => "delete"}
+        - if @track.persisted?
+          %form#delete-track-form.form-inline{:action => "/tracks/#{@track.id}/delete", :method => "post"}
+            .form-group.pull-right
+              %input.form-control.btn.btn-danger{:type => "submit", :value => "delete"}
   %hr
 
   .center-block

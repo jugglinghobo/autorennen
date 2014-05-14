@@ -5,6 +5,7 @@
     %meta{charset: "utf-8"}/
     %link{:href => "/stylesheets/reset.css", :rel => "stylesheet"}/
     %link{:href => "/stylesheets/bootstrap/bootstrap.min.css", :rel => "stylesheet"}/
+    %link{:href => "/stylesheets/bootstrap/colorpicker.css", :rel => "stylesheet"}/
 
     %link{:href => "/stylesheets/application.css", :rel => "stylesheet"}/
     %link{:href => "/stylesheets/tracks.css", :rel => "stylesheet"}/
@@ -19,8 +20,20 @@
         #navigation.navbar.navbar-static-top{:role => "navigation"}
           .container
             %ul.nav.navbar-nav
-              %li
-                %a{:href => "/races", :title => "races"} races
+              %li.dropdown
+                - races = Race.all
+                %a.dropdown-toggle{:href => "#", :data => {"toggle" => "dropdown"}}
+                  races
+                  %b.caret
+                %ul.dropdown-menu
+                  - races.each do |race|
+                    %li
+                      %a{:href => "/races/#{race.id}", :title => "#{race}"}
+                  - if races.any?
+                    %li.divider
+                  %li
+                    %a{:href => "/races/new", :title => "start a new race"}
+                      %span start a new race
               %li.dropdown
                 - tracks = Track.all
                 %a.dropdown-toggle{:href => "#", :data => {"toggle" => "dropdown"}}
@@ -39,9 +52,9 @@
             %ul.nav.navbar-nav.pull-right
               - if current_user
                 %li
-                  %a{:href => "/logout", :title => "logout"} logout
-                %li
                   %a{:href => "/users/#{current_user.id}", :title => "#{current_user}"}= current_user
+                %li
+                  %a{:href => "/logout", :title => "logout"} logout
               - else
                 %li.dropdown
                   %a#login.dropdown-toggle{:href => "#", :data => {"toggle" => "dropdown"}}

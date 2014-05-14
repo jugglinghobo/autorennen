@@ -1,0 +1,22 @@
+#race-container
+  %form#race-form.form-horizontal{:action => "/races/create", :method => "post"}
+    .container-fluid
+      .row
+        .col-md-10
+          .form-group
+            %label.control-label.col-md-2{:for => "race-track"} Track:
+            .col-md-5
+              %select#race-track.form-control
+                - Track.all.each do |track|
+                  %option{:value => track.id}= track.name
+        .col-md-2
+          .form-group.pull-right
+            %input.btn.btn-success{:type => "submit", :value => "start race"}
+      .row
+        .col-md-10
+          .form-group
+            %label.control-label.col-md-2{:for => "race-players"} Players:
+            .col-md-5
+              - User.all.each do |player|
+                .checkbox
+                  %input{:id => "#{player.id}", :type => "checkbox", :value => player.id}= player

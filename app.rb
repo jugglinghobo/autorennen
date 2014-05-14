@@ -49,13 +49,29 @@ get '/logout' do
 end
 
 get '/users/:id' do
-  @user = User.find params[:id]
+  get_user
   haml :"users/form"
+end
+
+post '/users/:id/update' do
+  get_user
+  if @user.update_attributes params[:user]
+    flash[:success] = "changes saved"
+    redirect to "/users/#{@user.id}"
+  else
+    flash.now[:error] = "changes could not be saved"
+    haml :"users/form"
+  end
 end
 
 get '/races' do
   @races = Race.all
   haml :"races/index"
+end
+
+get '/races/new' do
+  @race = Race.new
+  haml :"races/new"
 end
 
 get '/tracks' do
@@ -137,6 +153,10 @@ end
 
 def preprocess_tile_params!
   params[:track][:tiles] ||= {}
+end
+
+def get_user
+  @user = User.find params[:id]
 end
 
 def get_track

@@ -4,7 +4,7 @@ ruby "2.0.0"
 gem 'sinatra', '~> 1.4.5'
 gem 'sinatra-contrib', '~> 1.4.2'
 gem 'activerecord', '~> 4.1.0'
-gem 'sinatra-activerecord', '~> 1.7.0'
+gem 'sinatra-activerecord', '~> 2.0.1'
 gem 'sinatra-flash', '~> 0.3.0'
 gem 'json', '~> 1.8.1'
 gem 'rake', '~> 10.2.2'

@@ -1,0 +1,5 @@
+puts "create users"
+User.create username: "dani", password: "danidani"
+User.create username: "Joelu", password: "danidani"
+User.create username: "Smoky", password: "danidani"
+puts "Users created"
