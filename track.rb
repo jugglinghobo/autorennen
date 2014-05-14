@@ -1,6 +1,6 @@
 class Track < ActiveRecord::Base
   INT_ATTRS = ["x", "y", "column", "row", "size"]
-  validates_presence_of :name, :creator
+  validates_presence_of :name, :creator, :columns, :rows
 
   belongs_to :creator, :class_name => "User"
 

@@ -12,39 +12,57 @@
   - action = "/tracks/create"
   - css_id = 0
 
-%form#track-form.track.form-horizontal{:action => action, :method => "post"}
-  %input#track-id.form-control{:type => "hidden", :name => "track[id]", :value => @track.id}
-  %input#track-creator-id.form-control{:type => "hidden", :name => "track[creator-id]", :value => current_user.id}
-  .container-fluid
-    .form-group
-      %label.col-xs-1.control-label{:for => "track-name"} Name:
-      .col-xs-4
-        %input#track-name.form-control{:type => "text", :name => "track[name]", :placeholder => "new track", :value => @track.name}
-      .col-xs-2.pull-right
-        %input.pull-right.btn.btn-success{:type => "submit", :value => "save"}
-#track-container.center-block
-  #track-menu
-    %div.btn-toolbar
-      %div.btn-group{:data => {"toggle" => "buttons"}}
-        %label.btn.btn-default.active
-          draw track
-          %input#draw-track{:type => "radio", :name => "draw track", :checked => "checked"}
-        %label.btn.btn-default
-          erase track
-          %input#erase-track{:type => "radio", :name => "erase track"}
-        %label.btn.btn-default
-          %image#pickup-finish{:src => "/images/finish.png", :width => "15", :height => "15"}
-          %input#finish{:type => "radio", :name => "finish line"}
-        %label.btn.btn-default
-          %image#pickup-booster{:src => "/images/booster.png", :width => "15", :height => "15"}
-          %input#booster{:type => "radio", :name => "booster"}
-        %label.btn.btn-default
-          %image#pickup-rocket{:src => "/images/rocket.png", :width => "15", :height => "15"}
-          %input#rocket{:type => "radio", :name => "rocket"}
-        %label.btn.btn-default
-          %image#pickup-mine{:src => "/images/mine.png", :width => "15", :height => "15"}
-          %input#mine{:type => "radio", :name => "mine"}
-      %div.btn-group.pull-right
-        %button#clear.btn.btn-default clear
-  %canvas#track
+#track-container
+  #forms-container.container-fluid
+    .row
+      .col-md-10
+        %form#track-form.form-inline{:action => action, :method => "post"}
+          %input#track-id.form-control{:type => "hidden", :name => "track[id]", :value => @track.id}
+          %input#track-creator-id.form-control{:type => "hidden", :name => "track[creator-id]", :value => current_user.id}
+          .form-group
+            %label.control-label{:for => "track-name"} Name:
+            %input#track-name.form-control{:type => "text", :name => "track[name]", :placeholder => "new track", :value => @track.name}
+          .form-group
+            %label.control-label{:for => "track-columns"} Columns:
+            %input#track-columns.form-control{:type => "text", :name => "track[columns]", :value => @track.columns}
+          .form-group
+            %label.control-label{:for => "track-rows"} Rows:
+            %input#track-rows.form-control{:type => "text", :name => "track[rows]", :value => @track.rows}
+          .form-group
+            %input.form-control.btn.btn-success{:type => "submit", :value => "save"}
+
+      .col-md-2
+        %form.form-inline{:action => "/tracks/#{@track.id}/delete"}
+          .form-group.pull-right
+            %input.form-control.btn.btn-danger{:type => "submit", :value => "delete"}
+  %hr
+
+  .center-block
+    #track-menu.container-fluid
+      .row
+        .col-md-10
+          .btn-toolbar
+            .btn-group{:data => {"toggle" => "buttons"}}
+              %label.btn.btn-default.active
+                draw track
+                %input#draw-track{:type => "radio", :name => "draw track", :checked => "checked"}
+              %label.btn.btn-default
+                erase track
+                %input#erase-track{:type => "radio", :name => "erase track"}
+              %label.btn.btn-default
+                %image#pickup-finish{:src => "/images/finish.png", :width => "15", :height => "15"}
+                %input#finish{:type => "radio", :name => "finish line"}
+              %label.btn.btn-default
+                %image#pickup-booster{:src => "/images/booster.png", :width => "15", :height => "15"}
+                %input#booster{:type => "radio", :name => "booster"}
+              %label.btn.btn-default
+                %image#pickup-rocket{:src => "/images/rocket.png", :width => "15", :height => "15"}
+                %input#rocket{:type => "radio", :name => "rocket"}
+              %label.btn.btn-default
+                %image#pickup-mine{:src => "/images/mine.png", :width => "15", :height => "15"}
+                %input#mine{:type => "radio", :name => "mine"}
+        .col-md-2
+          .btn-group.pull-right
+            %button#clear.btn.btn-default clear
+    %canvas#track
 

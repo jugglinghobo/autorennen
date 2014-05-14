@@ -45,6 +45,8 @@ TrackForm.prototype.prepareTrackData = function() {
   data["track"] = {};
   data["track"]["id"] = $("#track-id").val();
   data["track"]["name"] = $("#track-name").val();
+  data["track"]["columns"] = $("#track-columns").val();
+  data["track"]["rows"] = $("#track-rows").val();
   data["track"]["creator_id"] = $("#track-creator-id").val();
   data["track"]["tiles"] = this.track.tiles();
   return data;

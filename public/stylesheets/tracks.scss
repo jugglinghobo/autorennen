@@ -1,9 +1,24 @@
 #track-container {
-  width: 21cm;
-  height: 29.7cm;
+
+  #forms-container {
+    margin: 10px 0;
+  }
+
+  #track-form {
+    #track-columns, #track-rows {
+      width: 100px;
+    }
+
+    .form-group {
+      margin-right: 0 10px;
+    }
+  }
 
   #track-menu {
-    margin: 5px;
+    margin: 10px 0;
+
+    #toolbar {
+    }
   }
 
   #track {
