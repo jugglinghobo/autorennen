@@ -1,53 +1,65 @@
-function TrackMenu(track) {
+function TrackMenu(track, canvas) {
   this.track = track;
+  this.canvas = canvas;
   this.tileSize = track.tileSize;
   this.mouseX;
   this.mouseY;
   this.drawing;
-  this.canvas = this.track.canvas;
-  this.initializeDrawListeners();
-  this.initializeMenuListeners();
-}
 
-TrackMenu.prototype.initializeMenuListeners = function() {
-  var menu = this;
-  $("#track-menu").on("click", "#clear", function(e) {
-    e.preventDefault();
-    menu.track.clear();
-  });
-}
+  // special handleEvent function, because we'd lose the reference to
+  // the trackMenu if we extract the eventHandling code otherwise. See
+  // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget.addEventListener#The_value_of_this_within_the_handler
+  this.handleEvent = function(event) {
+    var canvas = event.currentTarget;
+    switch(event.type) {
 
-TrackMenu.prototype.initializeDrawListeners = function() {
-  var trackMenu = this;
+      case 'mousedown':
+        var mouseX = event.pageX - canvas.offsetLeft;
+        var mouseY = event.pageY - canvas.offsetTop;
+        this.mouseX = mouseX;
+        this.mouseY = mouseY;
+        this.drawing = true;
+        this.addTile(this.mouseX, this.mouseY, false);
+      break;
 
-  this.canvas.addEventListener("mousedown", function(e) {
-    var mouseX = e.pageX - this.offsetLeft;
-    var mouseY = e.pageY - this.offsetTop;
-    trackMenu.mouseX = mouseX;
-    trackMenu.mouseY = mouseY;
-    trackMenu.drawing = true;
-    trackMenu.addTile(trackMenu.mouseX, trackMenu.mouseY, false);
-  });
+      case 'mousemove':
+        if(this.drawing) {
+          var mouseX = event.pageX - canvas.offsetLeft;
+          var mouseY = event.pageY - canvas.offsetTop;
+          this.addTile(mouseX, mouseY, true);
+        }
+      break;
 
-  this.canvas.addEventListener("mousemove", function(e) {
-    if(trackMenu.drawing) {
-      var mouseX = e.pageX - this.offsetLeft;
-      var mouseY = e.pageY - this.offsetTop;
-      trackMenu.addTile(mouseX, mouseY, true);
+      case 'mouseup':
+        this.drawing = false;
+      break;
+
+      case 'mouseleave':
+        this.drawing = false;
+      break;
     }
-  });
-
-  this.canvas.addEventListener("mouseup", function(e) {
-    trackMenu.drawing = false
-  });
-
-  this.canvas.addEventListener("mouseleave", function(e) {
-    trackMenu.drawing = false;
-  });
+  }
+  this.addTrackEventListeners();
 }
-// var tile = this.grid[gridX][gridY];
-// // do something with tile to let it know it is a boundary
-// this.boundaries.push(mouseInformation);
+
+TrackMenu.prototype.addTrackEventListeners = function() {
+  this.canvas.addEventListener("mousedown", this);
+  this.canvas.addEventListener("mousemove", this);
+  this.canvas.addEventListener("mouseup", this);
+  this.canvas.addEventListener("mouseleave", this);
+}
+
+TrackMenu.prototype.clear = function() {
+  console.log("CLEAR");
+  this.removeTrackEventListeners();
+}
+
+TrackMenu.prototype.removeTrackEventListeners = function() {
+  this.canvas.removeEventListener("mousedown", this);
+  this.canvas.removeEventListener("mousemove", this);
+  this.canvas.removeEventListener("mouseup", this);
+  this.canvas.removeEventListener("mouseleave", this);
+}
 
 TrackMenu.prototype.addTile = function(mouseX, mouseY, dragged) {
   var x = Math.floor(mouseX / this.tileSize) * this.tileSize;
@@ -57,5 +69,5 @@ TrackMenu.prototype.addTile = function(mouseX, mouseY, dragged) {
   var tile = new Tile(col, row, x, y, this.tileSize);
   this.track.addTile(tile);
   this.track.render();
-}
+};
 

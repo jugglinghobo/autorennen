@@ -6,7 +6,7 @@ $(document).ready(function() {
 
 function TrackForm(track) {
   this.track = track;
-  this.trackMenu = new TrackMenu(track);
+  this.menuManager = new MenuManager(track);
   this.initialize();
 }
 

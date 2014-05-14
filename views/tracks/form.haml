@@ -1,7 +1,9 @@
 %script{:src => "/javascript/track.js"}
 %script{:src => "/javascript/tile.js"}
 %script{:src => "/javascript/track_form.js"}
+%script{:src => "/javascript/menu_manager.js"}
 %script{:src => "/javascript/track_menu.js"}
+%script{:src => "/javascript/pickup_menu.js"}
 - if @track.persisted?
   - action = "/tracks/#{@track.id}/update"
   - css_id = @track.id
@@ -21,9 +23,19 @@
         %input.pull-right.btn.btn-success{:type => "submit", :value => "save"}
 #track-container.center-block
   #track-menu
-    %ul.pull-right
-      %li
-        %a#clear.btn.btn-default.btn-sm{:href => "#", :title => "clear"} clear
-    .clearfix
+    %div.btn-group{:data => {"toggle" => "buttons"}}
+      %label.btn.btn-default
+        draw track
+        %input#draw-track{:type => "radio", :name => "draw track"}
+      %label.btn.btn-default
+        booster
+        %input#booster{:type => "radio", :name => "booster"}
+      %label.btn.btn-default
+        rocket
+        %input#rocket{:type => "radio", :name => "rocket"}
+      %label.btn.btn-default
+        mine
+        %input#mine{:type => "radio", :name => "mine"}
+    %button#clear.btn.btn-default.pull-right clear
   %canvas#track
 
