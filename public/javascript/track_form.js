@@ -36,6 +36,7 @@ TrackForm.prototype.initializeFormListeners = function() {
       method: 'POST',
       data: data,
     }).success(function(data) {
+      console.log("SUCCESS");
       if (data.error) {
         handleError(data);
       } else {

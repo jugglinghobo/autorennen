@@ -10,7 +10,6 @@ function Track(id) {
   this.canvas;
   this.context;
   this.tileGrid;
-  this.pickups;
   this.initialize();
   window.t = this;
 };
@@ -18,7 +17,6 @@ function Track(id) {
 Track.prototype.initialize = function() {
   this.loadData();
   this.loadCanvas();
-  this.loadPickups();
   this.render();
 };
 
@@ -39,17 +37,6 @@ Track.prototype.loadCanvas = function() {
   this.canvas.width = this.width;
   this.canvas.height = this.height;
   this.context = this.canvas.getContext("2d");
-};
-
-Track.prototype.loadPickups = function() {
-  var pickupIds = ["pickup-finish", "pickup-booster", "pickup-rocket", "pickup-mine"]
-  this.pickupSources = {};
-
-  var track = this;
-  pickupIds.forEach(function(id) {
-    var pickup = id.replace(/pickup-/g, '');
-    track.pickupSources[id] = "/images/"+pickup+".png"
-  });
 };
 
 Track.prototype.update = function(data) {
@@ -73,8 +60,8 @@ Track.prototype.buildGrid = function(tiles) {
   for(var c = 0; c < this.columns; c++) {
     tileGrid[c] = [];
     for (var r = 0; r < this.rows; r++) {
-      var tile = $.grep(tiles, function(tile) { return (tile.column == c && tile.row == r) })[0];
-      tileGrid[c][r] = tile;
+      var jsonTile = $.grep(tiles, function(tile) { return (tile.column == c && tile.row == r) })[0];
+      tileGrid[c][r] = new Tile(c, r, this.tileSize, jsonTile);
     };
   };
   return tileGrid;
@@ -82,11 +69,12 @@ Track.prototype.buildGrid = function(tiles) {
 
 Track.prototype.tiles = function() {
   var tiles = [];
-  for(c = 0; c < this.columns; c++) {
-    for(r = 0; r < this.rows; r++) {
+  for(var c = 0; c < this.columns; c++) {
+    for(var r = 0; r < this.rows; r++) {
       var tile = this.tileGrid[c][r];
-      if (tile) {
-        tiles.push(tile);
+      if (tile && tile.partOfTrack) {
+        var jsonTile = tile.toJson();
+        tiles.push(jsonTile);
       };
     };
   };
@@ -108,19 +96,32 @@ Track.prototype.removeTileAt = function(column, row) {
 Track.prototype.addPickupAt = function(column, row, pickup) {
   var tile = this.tileGrid[column][row];
   if (tile) {
-    tile.pickup = pickup;
+    tile.setPickup(pickup);
     this.render();
   }
 }
 
 Track.prototype.clear = function() {
-  for(c = 0; c < this.columns; c++) {
-    for(r = 0; r < this.rows; r++) {
-      this.tileGrid[c][r] = undefined;
+  for(var c = 0; c < this.columns; c++) {
+    for(var r = 0; r < this.rows; r++) {
+      this.tileGrid[c][r] = new Tile(c, r, this.tileSize);
     };
   };
   this.render();
 };
+
+Track.prototype.getFinishLinePositions = function() {
+  var finishLine = []
+  for(var c = 0; c < this.columns; c++) {
+    for(var r = 0; r < this.rows; r++) {
+      var tile = this.tileGrid[c][r];
+      if (tile && tile.touchesPickup("pickup-finish")) {
+        finishLine.push(tile);
+      };
+    };
+  };
+  return finishLine;
+}
 
 Track.prototype.loadPath = function() {
   if (this.id) {
@@ -145,36 +146,12 @@ Track.prototype.renderGrid = function() {
   this.context.strokeRect(0+0.5, 0+0.5, this.canvas.width-0.5, this.canvas.height-0.5);
 
   // stroke non-track tiles
-  for(c = 0; c < this.columns; c++) {
-    for(r = 0; r < this.rows; r++) {
+  for(var c = 0; c < this.columns; c++) {
+    for(var r = 0; r < this.rows; r++) {
       var tile = this.tileGrid[c][r];
       if(tile) {
-        this.renderTile(tile);
+        tile.render(this.context);
       };
     };
   };
 };
-
-Track.prototype.renderTile = function(tile) {
-  var x = tile.x+0.5;
-  var y = tile.y+0.5;
-  var size = tile.size;
-
-  // tile
-  if (tile.pickup) {
-    var pickupImg = new Image();
-    pickupImg.src = this.pickupSources[tile.pickup];
-    var track = this;
-    pickupImg.onload = function() {
-      track.context.drawImage(this, x+0.5, y+0.5, size-1, size-1);
-    }
-  } else {
-    this.context.fillStyle = "#eee";
-    this.context.fillRect(x, y, size, size);
-    this.context.fillStyle = "black";
-  }
-
-  // border
-  this.context.strokeRect(x, y, size, size);
-};
-
