@@ -6,6 +6,8 @@ class CreateRaces < ActiveRecord::Migration
      t.text :arsenals, :default => "{}"
      t.text :positions, :default => "{}"
      t.belongs_to :track
+     t.belongs_to :active_player
+     t.belongs_to :initial_player
      t.timestamps
    end
   end

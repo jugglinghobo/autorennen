@@ -15,10 +15,12 @@ ActiveRecord::Schema.define(version: 20140515002122) do
 
   create_table "races", force: true do |t|
     t.string   "name"
-    t.integer  "turn",       default: 0
-    t.text     "arsenals",   default: "{}"
-    t.text     "positions",  default: "{}"
+    t.integer  "turn",              default: 0
+    t.text     "arsenals",          default: "{}"
+    t.text     "positions",         default: "{}"
     t.integer  "track_id"
+    t.integer  "active_player_id"
+    t.integer  "initial_player_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

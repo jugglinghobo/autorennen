@@ -117,7 +117,7 @@ end
 get '/races/:id.json' do
   authenticate!
   get_race
-  @race.to_json(:include => :users, :methods => :active_player)
+  @race.to_json(:include => [:users, :active_player])
 end
 
 get '/races/:id' do

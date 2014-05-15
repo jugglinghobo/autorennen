@@ -88,7 +88,6 @@ Tile.prototype.touchesPickup = function(pickup) {
   var touchingTiles = this.touchingTiles();
   touchingTiles.forEach(function(touching) {
     if (touching && touching.pickup && touching.pickup.id == pickup) {
-      debugger;
       touch = true;
     }
   });

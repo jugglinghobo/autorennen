@@ -120,7 +120,6 @@ Track.prototype.getFinishLinePositions = function() {
       };
     };
   };
-  console.log(finishLine);
   return finishLine;
 }
 

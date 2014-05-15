@@ -1,10 +1,14 @@
 class Race < ActiveRecord::Base
   has_and_belongs_to_many :users
   belongs_to :track
+  belongs_to :active_player, :class_name => "User"
+  belongs_to :initial_player, :class_name => "User"
 
   validates_presence_of :name
 
-  before_create :set_initial_arsenals, :set_initial_positions
+  before_create :set_initial_arsenals, :set_initial_positions, :set_initial_active_player, :set_initial_player
+
+  before_update :after_play
 
   def to_s
     name
@@ -33,11 +37,42 @@ class Race < ActiveRecord::Base
     arsenals[user.id.to_s]
   end
 
-  def active_player
-    users.first
+  private
+
+  def after_play
+    next_index = (users.index(active_player)+1) % users.count
+    set_next_positions
+    self.active_player = users[next_index]
+    if active_player == initial_player
+      self.turn += 1
+    end
   end
 
-  private
+  def set_next_positions
+    current_positions = self.positions
+    current_positions[active_player.id.to_s][(turn+1).to_s] = {:x => next_position(:x), :y => next_position(:y)}
+    self.positions = current_positions
+  end
+
+  def next_position(direction)
+    last_position = self.positions[active_player.id.to_s][(turn-1).to_s]
+    current_position = self.positions[active_player.id.to_s][turn.to_s]
+    if last_position
+      current_position[direction.to_s].to_i + (current_position[direction.to_s].to_i - last_position[direction.to_s].to_i)
+    else
+      current_position[direction.to_s].to_i
+    end
+  end
+
+  def set_initial_active_player
+    puts "USERS"
+    puts users.inspect
+    self.active_player = users.sample
+  end
+
+  def set_initial_player
+    self.initial_player = self.active_player
+  end
 
   def set_initial_positions
     positions = {}
