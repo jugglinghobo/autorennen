@@ -72,7 +72,7 @@ Track.prototype.tiles = function() {
   for(var c = 0; c < this.columns; c++) {
     for(var r = 0; r < this.rows; r++) {
       var tile = this.tileGrid[c][r];
-      if (tile && tile.partOfTrack) {
+      if (tile && tile.isTrack()) {
         var jsonTile = tile.toJson();
         tiles.push(jsonTile);
       };

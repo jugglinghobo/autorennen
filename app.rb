@@ -163,6 +163,7 @@ post '/tracks/create' do
 end
 
 post '/tracks/:id/update' do
+  puts params[:track].inspect
   authenticate!
   preprocess_tile_params!
   get_track
