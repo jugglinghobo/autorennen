@@ -61,7 +61,7 @@ Track.prototype.buildGrid = function(tiles) {
     tileGrid[c] = [];
     for (var r = 0; r < this.rows; r++) {
       var jsonTile = $.grep(tiles, function(tile) { return (tile.column == c && tile.row == r) })[0];
-      tileGrid[c][r] = new Tile(c, r, this.tileSize, jsonTile);
+      tileGrid[c][r] = new Tile(this, c, r, this.tileSize, jsonTile);
     };
   };
   return tileGrid;
@@ -96,7 +96,7 @@ Track.prototype.removeTileAt = function(column, row) {
 Track.prototype.addPickupAt = function(column, row, pickup) {
   var tile = this.tileGrid[column][row];
   if (tile) {
-    tile.setPickup(pickup);
+    tile.pickup = new Pickup(tile, pickup);
     this.render();
   }
 }
@@ -104,7 +104,7 @@ Track.prototype.addPickupAt = function(column, row, pickup) {
 Track.prototype.clear = function() {
   for(var c = 0; c < this.columns; c++) {
     for(var r = 0; r < this.rows; r++) {
-      this.tileGrid[c][r] = new Tile(c, r, this.tileSize);
+      this.tileGrid[c][r] = new Tile(this, c, r, this.tileSize);
     };
   };
   this.render();
@@ -120,6 +120,7 @@ Track.prototype.getFinishLinePositions = function() {
       };
     };
   };
+  console.log(finishLine);
   return finishLine;
 }
 

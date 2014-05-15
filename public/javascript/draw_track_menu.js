@@ -60,7 +60,7 @@ DrawTrackMenu.prototype.addTile = function(mouseX, mouseY, dragged) {
   var y = Math.floor(mouseY / this.tileSize) * this.tileSize;
   var col = x/this.tileSize;
   var row = y/this.tileSize;
-  var tile = new Tile(col, row, this.tileSize, true);
+  var tile = new Tile(this.track, col, row, this.tileSize, true);
   this.track.addTile(tile);
 };
 
