@@ -6,7 +6,7 @@ $(document).ready(function() {
 
 function TrackForm(track) {
   this.track = track;
-  this.menuManager = new MenuManager(track);
+  this.menuManager = new TrackMenuManager(track);
   this.initialize();
 }
 
@@ -61,7 +61,7 @@ TrackForm.prototype.prepareTrackData = function() {
   data["track"]["name"] = $("#track-name").val();
   data["track"]["columns"] = $("#track-columns").val();
   data["track"]["rows"] = $("#track-rows").val();
-  data["track"]["creator_id"] = $("#track-creator-id").val();
+  data["track"]["user_id"] = $("#track-user-id").val();
   data["track"]["tiles"] = this.track.tiles();
   return data;
 }

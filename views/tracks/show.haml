@@ -1,7 +1,7 @@
 %script{:src => "/javascript/track.js"}
 %h1
   = @track.name
-  %small= "by #{@track.creator}"
+  %small= "by #{@track.user}"
 #track-container.center-block
   %canvas#track{:data => {:id => @track.id}}
 

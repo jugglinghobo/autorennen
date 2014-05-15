@@ -8,6 +8,7 @@
     %link{:href => "/stylesheets/bootstrap/colorpicker.css", :rel => "stylesheet"}/
 
     %link{:href => "/stylesheets/application.css", :rel => "stylesheet"}/
+    %link{:href => "/stylesheets/races.css", :rel => "stylesheet"}/
     %link{:href => "/stylesheets/tracks.css", :rel => "stylesheet"}/
 
     %script{:src => "/javascript/jquery-1.10.2.min.js"}
@@ -29,6 +30,7 @@
                   - races.each do |race|
                     %li
                       %a{:href => "/races/#{race.id}", :title => "#{race}"}
+                        = race
                   - if races.any?
                     %li.divider
                   %li

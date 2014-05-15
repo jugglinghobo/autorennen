@@ -1,11 +1,11 @@
-function MenuManager(track) {
+function TrackMenuManager(track) {
   this.track = track;
   this.canvas = this.track.canvas;
   this.activeMenu = new DrawTrackMenu(this.track, this.canvas);
   this.initializeMenuListeners();
 }
 
-MenuManager.prototype.initializeMenuListeners = function() {
+TrackMenuManager.prototype.initializeMenuListeners = function() {
   var menu = this;
   $("#track-menu").on("change", "#draw-track", function(e) {
     e.preventDefault();
@@ -49,7 +49,7 @@ MenuManager.prototype.initializeMenuListeners = function() {
   });
 };
 
-MenuManager.prototype.disableActiveMenu = function() {
+TrackMenuManager.prototype.disableActiveMenu = function() {
   if (this.activeMenu) {
     this.activeMenu.disable();
   };

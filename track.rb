@@ -1,8 +1,11 @@
 class Track < ActiveRecord::Base
   INT_ATTRS = ["x", "y", "column", "row", "size"]
-  validates_presence_of :name, :creator, :columns, :rows
+  validates_presence_of :name, :user, :columns, :rows
 
-  belongs_to :creator, :class_name => "User"
+  belongs_to :user
+  has_many :races
+
+  alias_method :creator, :user
 
   def to_s
     name

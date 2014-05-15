@@ -1,11 +1,7 @@
-//$(document).ready(function() {
-//  var track = new Track(trackId);
-//});
-
 function Track(id) {
   this.id = id;
   this.name;
-  this.creator;
+  this.user;
   this.columns;
   this.rows;
   this.width;
@@ -16,7 +12,7 @@ function Track(id) {
   this.tileGrid;
   this.pickups;
   this.initialize();
-  window.crack = this;
+  window.t = this;
 };
 
 Track.prototype.initialize = function() {
@@ -51,7 +47,8 @@ Track.prototype.loadPickups = function() {
 
   var track = this;
   pickupIds.forEach(function(id) {
-    track.pickupSources[id] = document.getElementById(id).src;
+    var pickup = id.replace(/pickup-/g, '');
+    track.pickupSources[id] = "/images/"+pickup+".png"
   });
 };
 
@@ -62,7 +59,7 @@ Track.prototype.update = function(data) {
 
 Track.prototype.setData = function(data) {
   this.name = data.name;
-  this.creator = data.creator;
+  this.user = data.user;
   this.columns = data.columns;
   this.rows = data.rows;
   this.tileSize = data.tile_size;
@@ -165,7 +162,6 @@ Track.prototype.renderTile = function(tile) {
 
   // tile
   if (tile.pickup) {
-    //debugger;
     var pickupImg = new Image();
     pickupImg.src = this.pickupSources[tile.pickup];
     var track = this;

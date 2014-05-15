@@ -49,11 +49,13 @@ get '/logout' do
 end
 
 get '/users/:id' do
+  authenticate!
   get_user
   haml :"users/form"
 end
 
 post '/users/:id/update' do
+  authenticate!
   get_user
   if @user.update_attributes params[:user]
     flash[:success] = "changes saved"
@@ -65,16 +67,66 @@ post '/users/:id/update' do
 end
 
 get '/races' do
+  authenticate!
   @races = Race.all
   haml :"races/index"
 end
 
 get '/races/new' do
+  authenticate!
   @race = Race.new
   haml :"races/new"
 end
 
+post '/races/create' do
+  authenticate!
+  @race = Race.new params[:race]
+  if @race.save
+    flash[:success] = "race created"
+    redirect to "/races/#{@race.id}"
+  else
+    flash.now[:error] = "race could not be created"
+    haml :"races/new"
+  end
+end
+
+post '/races/:id/update' do
+  authenticate!
+  get_race
+  if @race.update_attributes params[:race]
+    flash[:success] = "move saved"
+    @race.to_json
+  else
+    {:message => "move could not be saved", :error => true, :status => 400}.to_json
+  end
+end
+
+post '/races/:id/delete' do
+  authenticate!
+  get_race
+  if @race.destroy
+    flash[:success] = "race deleted"
+    redirect to "/"
+  else
+    flash.now[:error] = "race could not be deleted"
+    haml :"races/show"
+  end
+end
+
+get '/races/:id.json' do
+  authenticate!
+  get_race
+  @race.to_json(:include => :users, :methods => :active_player)
+end
+
+get '/races/:id' do
+  authenticate!
+  get_race
+  haml :"races/show"
+end
+
 get '/tracks' do
+  authenticate!
   haml :tracks
 end
 
@@ -134,11 +186,13 @@ end
 
 
 get '/tracks/:id.json' do
+  authenticate!
   get_track
-  @track.to_json(:methods => :tile_grid)
+  @track.to_json
 end
 
 get '/tracks/:id' do
+  authenticate!
   get_track
   haml :"tracks/show"
 end
@@ -157,6 +211,10 @@ end
 
 def get_user
   @user = User.find params[:id]
+end
+
+def get_race
+  @race = Race.find params[:id]
 end
 
 def get_track
