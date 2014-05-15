@@ -11,6 +11,7 @@ function RaceForm(race) {
 }
 
 RaceForm.prototype.initializeFormListeners = function() {
+  var raceForm = this;
   // add cmd+s key listener
   document.addEventListener("keydown", function(e) {
     if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey))      {
@@ -22,7 +23,7 @@ RaceForm.prototype.initializeFormListeners = function() {
   $("#race-form").on("submit", function(e) {
     e.preventDefault();
     var path = $(this).attr("action");
-    var data = this.raceForm.prepareTrackData();
+    var data = raceForm.prepareTrackData();
     $.ajax({
       url: path,
       dataType: "json",
@@ -33,7 +34,7 @@ RaceForm.prototype.initializeFormListeners = function() {
         handleError(data);
       } else {
         var id = data.id;
-        var url = "/race/"+id+"";
+        var url = "/races/"+id+"";
 
         window.location.href = url;
       };

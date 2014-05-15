@@ -14,6 +14,17 @@ class Race < ActiveRecord::Base
     JSON.parse(read_attribute(:arsenals))
   end
 
+  def positions=(positions_hash)
+    # convert string keys to ints
+    positions_hash.keys.each do |user_id|
+      positions_hash[user_id].keys.each do |turn|
+        positions_hash[user_id][turn.to_i] = positions_hash[user_id].delete(turn)
+      end
+      positions_hash[user_id.to_i] = positions_hash.delete(user_id)
+    end
+    write_attribute(:positions, positions_hash.to_json)
+  end
+
   def positions
     JSON.parse(read_attribute(:positions))
   end

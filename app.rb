@@ -93,6 +93,7 @@ end
 post '/races/:id/update' do
   authenticate!
   get_race
+  puts params[:race].inspect
   if @race.update_attributes params[:race]
     flash[:success] = "move saved"
     @race.to_json
