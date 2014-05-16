@@ -28,6 +28,7 @@
               %tr
                 %th{:colspan => 2}
                   .color_label.inline{:style => "background-color: #{player.color}"}
+                    = player.id
                   = player
             - ["booster", "rocket", "mine"].each do |pickup|
               %tr

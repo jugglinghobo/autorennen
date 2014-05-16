@@ -106,7 +106,7 @@ Race.prototype.loadPath = function() {
 Race.prototype.render = function() {
   this.track.render();
   this.renderPlayers();
-  this.renderValidMoves();
+  //this.renderValidMoves();
 }
 
 Race.prototype.renderValidMoves = function() {
@@ -126,41 +126,62 @@ Race.prototype.renderPlayers = function() {
   var race = this;
   var lineWidth = 2;
   var radius = 3;
+
   this.players.forEach(function(player) {
-    race.context.fillStyle = player.color;
-    race.context.lineWidth = lineWidth;
-    race.context.strokeStyle = player.color;
+    race.renderPastMoves(player);
+    race.renderThisTurn(player);
+  });
+}
 
-    race.context.beginPath();
-    for(var turn = 0; turn < race.turn; turn++) {
-      var x = race.positions[player.id][turn]["x"];
-      var y = race.positions[player.id][turn]["y"];
+Race.prototype.renderPastMoves = function(player) {
+  var race = this;
+  var lineWidth = 2;
+  var radius = 3;
+  race.context.fillStyle = player.color;
+  race.context.strokeStyle = player.color;
+  race.context.lineWidth = lineWidth;
 
+  race.context.beginPath();
+  for(var turn = 0; turn < race.turn; turn++) {
+    var x = race.positions[player.id][turn]["x"];
+    var y = race.positions[player.id][turn]["y"];
+    console.log("turn: "+turn+", player: "+player.username+", x: "+x+", y: "+y);
+
+    if (x && y) {
+      race.context.lineTo(x, y);
+      race.context.moveTo(x, y);
+      race.context.arc(x, y, radius, 0, 2*Math.PI);
+      race.context.moveTo(x, y);
+      race.context.fill();
+      race.context.stroke();
+    };
+  };
+  race.context.strokeStyle = "black";
+  race.context.fillStyle = "black";
+  race.context.lineWidth = 1;
+}
+
+Race.prototype.renderThisTurn = function(player) {
+  var race = this;
+  var lineWidth = 2;
+  var radius = 3;
+
+  debugger;
+  var movesForTurn = race.positions[player][race.turn]
+    if (movesForTurn) {
+      var x = race.positions[player][race.turn]["x"];
+      var y = race.positions[player][race.turn]["y"];
       if (x && y) {
-        race.context.lineTo(x, y);
         race.context.moveTo(x, y);
         race.context.arc(x, y, radius, 0, 2*Math.PI);
         race.context.moveTo(x, y);
+        race.context.strokeStyle = race.activePlayer.color;
+        race.context.fillStyle = race.activePlayer.color;
+        race.context.lineWidth = lineWidth;
+        race.context.fill();
+        race.context.stroke();
       };
-    };
-
-    race.context.fill();
-    race.context.stroke();
-    race.context.strokeStyle = "black";
-    race.context.fillStyle = "black";
-    race.context.lineWidth = 1;
-  });
-
-  var x = race.positions[race.activePlayer.id][race.turn]["x"];
-  var y = race.positions[race.activePlayer.id][race.turn]["y"];
-  if (x && y) {
-    race.context.lineTo(x, y);
-    race.context.moveTo(x, y);
-    race.context.arc(x, y, radius, 0, 2*Math.PI);
-    race.context.moveTo(x, y);
-  };
-  race.context.fill();
-  race.context.stroke();
+    }
   race.context.strokeStyle = "black";
   race.context.fillStyle = "black";
   race.context.lineWidth = 1;
