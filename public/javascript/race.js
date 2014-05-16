@@ -106,7 +106,7 @@ Race.prototype.loadPath = function() {
 Race.prototype.render = function() {
   this.track.render();
   this.renderPlayers();
-  //this.renderValidMoves();
+  this.renderValidMoves();
 }
 
 Race.prototype.renderValidMoves = function() {
@@ -166,17 +166,17 @@ Race.prototype.renderThisTurn = function(player) {
   var lineWidth = 2;
   var radius = 3;
 
-  debugger;
-  var movesForTurn = race.positions[player][race.turn]
+  var movesForTurn = race.positions[player.id][race.turn]
     if (movesForTurn) {
-      var x = race.positions[player][race.turn]["x"];
-      var y = race.positions[player][race.turn]["y"];
+      var x = race.positions[player.id][race.turn]["x"];
+      var y = race.positions[player.id][race.turn]["y"];
       if (x && y) {
+        race.context.lineTo(x, y);
         race.context.moveTo(x, y);
         race.context.arc(x, y, radius, 0, 2*Math.PI);
         race.context.moveTo(x, y);
-        race.context.strokeStyle = race.activePlayer.color;
-        race.context.fillStyle = race.activePlayer.color;
+        race.context.strokeStyle = player.color;
+        race.context.fillStyle = player.color;
         race.context.lineWidth = lineWidth;
         race.context.fill();
         race.context.stroke();
