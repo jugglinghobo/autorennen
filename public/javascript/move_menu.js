@@ -13,9 +13,7 @@ function MoveMenu(race, canvas) {
     }
   }
 
-  if (race.currentUser.id == race.activePlayer.id) {
-    this.addMoveMenuListeners();
-  }
+  this.addMoveMenuListeners();
 }
 
 MoveMenu.prototype.addMoveMenuListeners = function() {

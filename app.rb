@@ -15,20 +15,27 @@ require './track'
 require './tile'
 
 
+
 Dir.mkdir('logs') unless File.exist?('logs')
 $log = Logger.new('logs/output.log','weekly')
 
 configure :production do
   $log.level = Logger::WARN
+  set :debugging, false
 end
 configure :development do
   $log.level = Logger::DEBUG
+  set :debugging, true
 end
 
 enable :sessions
 
 get '/' do
   haml :"races/index"
+end
+
+get '/debugging.json' do
+  {:debugging => settings.debugging}.to_json
 end
 
 post '/login' do
@@ -245,22 +252,38 @@ def logout
   session[:user_id] = nil
 end
 
-def current_user
-  if session[:user_id]
-    User.find session[:user_id]
+helpers do
+  def current_user
+    if session[:user_id]
+      User.find session[:user_id]
+    end
   end
-end
 
-def can_play?(user)
-  raise "instance variable @race not set" unless @race
-  user == @race.active_player
-end
+  def can_play?(user)
+    raise "instance variable @race not set" unless @race
+    settings.debugging || (user == @race.active_player)
+  end
 
-def flash_class(level)
-  case level
-    when :notice then "alert alert-info"
-    when :success then "alert alert-success"
-    when :alert then "alert alert-warning"
-    when :error then "alert alert-danger"
+  def debugging(&block)
+    if block_given?
+      css_class = "debugging"
+      css_class += " hidden" unless settings.debugging
+      div = "<div class='#{css_class}'>#{block.call}</div>"
+      puts "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
+      puts div
+      puts "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
+      div
+    else
+      settings.debugging
+    end
+  end
+
+  def flash_class(level)
+    case level
+      when :notice then "alert alert-info"
+      when :success then "alert alert-success"
+      when :alert then "alert alert-warning"
+      when :error then "alert alert-danger"
+    end
   end
 end

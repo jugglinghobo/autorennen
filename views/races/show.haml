@@ -13,8 +13,6 @@
       .col-md-10
         %h3
           = @race
-          %small
-            = "Turn: #{@race.turn}"
       .col-md-2
         %form#delete-race-form.form-inline.pull-right{:action => "/races/#{@race.id}/delete", :method => "post"}
           %input.btn.btn-danger{:type => "submit", :value => "delete race"}
@@ -28,7 +26,8 @@
               %tr
                 %th{:colspan => 2}
                   .color-label.inline{:style => "background-color: #{player.color}"}
-                    = player.id
+                    = debugging do
+                      - player.id
                   = player
             - ["booster", "rocket", "mine"].each do |pickup|
               %tr
@@ -42,12 +41,13 @@
     %input#race-id{:type => "hidden", :value => @race.id}
     #race-menu.container-fluid
       .row
-        .col-md-2
+        .col-md-3
           %h4
+            = "#{@race.turn}. Turn"
             .color-label.inline{:style => "background-color: #{@race.active_player.color}"}
             = @race.active_player
         - if can_play?(current_user)
-          .col-md-8
+          .col-md-7
             .btn-toolbar
               .btn-group{:data => {"toggle" => "buttons"}}
                 %label.btn.btn-default.active

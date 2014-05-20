@@ -1,9 +1,14 @@
 html, body {
   height: 100%;
+  letter-spacing: 1px;
 }
 
 th {
   font-weight: bold;
+}
+
+.debugging {
+  //display: none;
 }
 
 #wrapper {

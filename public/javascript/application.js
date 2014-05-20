@@ -1,10 +1,26 @@
 $(document).ready(function() {
-  $("#login").on("click", function(e) {
-    e.preventDefault();
-    var input = $("#username");
-    input.focus();
-  });
+  loadDebugging();
+  initializeLoginAutofocus();
 });
+
+var loadDebugging = function() {
+  $.ajax({
+    url: '/debugging.json',
+    dataType: 'json',
+    async: false,
+  }).success(function(data) {
+    debugging = data['debugging'];
+  });
+}
+
+var initializeLoginAutofocus = function() {
+  $("#login").on("click", function(e) {
+    setTimeout(function() {
+      var input = $("#username");
+      input.focus();
+    }, 50);
+  });
+}
 
 var handleError = function(data) {
   var message = data.message;
