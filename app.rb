@@ -48,6 +48,12 @@ get '/logout' do
   redirect to '/'
 end
 
+get '/users/:id.json' do
+  authenticate!
+  get_user
+  @user.to_json
+end
+
 get '/users/:id' do
   authenticate!
   get_user
@@ -243,6 +249,11 @@ def current_user
   if session[:user_id]
     User.find session[:user_id]
   end
+end
+
+def can_play?(user)
+  raise "instance variable @race not set" unless @race
+  user == @race.active_player
 end
 
 def flash_class(level)

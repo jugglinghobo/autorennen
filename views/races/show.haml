@@ -27,7 +27,7 @@
             %thead
               %tr
                 %th{:colspan => 2}
-                  .color_label.inline{:style => "background-color: #{player.color}"}
+                  .color-label.inline{:style => "background-color: #{player.color}"}
                     = player.id
                   = player
             - ["booster", "rocket", "mine"].each do |pickup|
@@ -42,20 +42,25 @@
     %input#race-id{:type => "hidden", :value => @race.id}
     #race-menu.container-fluid
       .row
-        .col-md-10
-          .btn-toolbar
-            .btn-group{:data => {"toggle" => "buttons"}}
-              %label.btn.btn-default.active
-                move
-                %input#move{:type => "radio", :name => "move", :checked => "checked"}
-              - ["booster", "rocket", "mine"].each do |pickup|
-                %label.btn.btn-default
-                  %image{:id => "pickup-#{pickup}", :src => "/images/#{pickup}.png", :width => "15", :height => "15"}
-                  = ": #{arsenal[pickup]}"
-                  %input{:id => pickup, :type => "radio", :name => pickup}
         .col-md-2
-          .btn-group.pull-right
-            %input#save-move.btn.btn-success{:type => "submit", :value => "save move"}
+          %h4
+            .color-label.inline{:style => "background-color: #{@race.active_player.color}"}
+            = @race.active_player
+        - if can_play?(current_user)
+          .col-md-8
+            .btn-toolbar
+              .btn-group{:data => {"toggle" => "buttons"}}
+                %label.btn.btn-default.active
+                  move
+                  %input#move{:type => "radio", :name => "move", :checked => "checked"}
+                - ["booster", "rocket", "mine"].each do |pickup|
+                  %label.btn.btn-default
+                    %image{:id => "pickup-#{pickup}", :src => "/images/#{pickup}.png", :width => "15", :height => "15"}
+                    = ": #{arsenal[pickup]}"
+                    %input{:id => pickup, :type => "radio", :name => pickup}
+          .col-md-2
+            .btn-group.pull-right
+              %input#save-move.btn.btn-success{:type => "submit", :value => "save move"}
 
   .center-block
     %canvas#track{:data => {"id" => @race.track.id}}

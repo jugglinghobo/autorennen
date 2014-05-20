@@ -55,6 +55,7 @@
               - if current_user
                 %li
                   %a{:href => "/users/#{current_user.id}", :title => "#{current_user}"}= current_user
+                  #current-user-id.hidden{:data => {:id => current_user.id}}
                 %li
                   %a{:href => "/logout", :title => "logout"} logout
               - else

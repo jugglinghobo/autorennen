@@ -8,13 +8,16 @@ function Race(id) {
   this.arsenals;
   this.canvas;
   this.context;
+  this.currentUser;
   this.initialize();
   window.race = this;
 }
 
 Race.prototype.initialize = function() {
   this.loadData();
+  this.loadCurrentUser();
   this.loadCanvas();
+  this.computeNextPosition();
   this.computeValidPositions();
   this.render();
 };
@@ -41,6 +44,19 @@ Race.prototype.setData = function(data) {
   this.track = new Track(data.track_id);
 }
 
+Race.prototype.loadCurrentUser = function() {
+  var race = this;
+  var currentUserId = $("#current-user-id").data("id");
+  var loadPath = "/users/"+currentUserId+".json";
+  $.ajax({
+    url: loadPath,
+    dataType: 'json',
+    async: false,
+  }).success(function(data) {
+    race.currentUser = data;
+  });
+}
+
 Race.prototype.loadCanvas = function() {
   this.canvas = document.getElementById("track");
   this.context = this.canvas.getContext("2d");
@@ -55,7 +71,10 @@ Race.prototype.computeValidPositions = function() {
   if (this.turn == 0) {
     validPositions = this.track.getFinishLinePositions();
   } else {
-    var nextTile = this.track.tileGrid[Number(nextPosition["x"])/this.track.tileSize][Number(nextPosition["y"])/this.track.tileSize];
+    var x = nextPosition["x"];
+    var y = nextPosition["y"];
+
+    var nextTile = this.track.tileGrid[Number(x)/this.track.tileSize][Number(y)/this.track.tileSize];
     var adjacentTiles = nextTile.adjacentTiles();
     for(c = -1; c < 2; c++) {
       for(r = -1; r < 2; r++) {
@@ -69,11 +88,28 @@ Race.prototype.computeValidPositions = function() {
   this.validPositions = validPositions;
 }
 
-Race.prototype.calculateNextPosition = function(lastPosition, current_position) {
-  var nextPosition = {}
-  nextPosition["x"] = Number(current_position["x"]) + (Number(current_position["x"]) - Number(lastPosition["x"]));
-  nextPosition["y"] = Number(current_position["y"]) + (Number(current_position["y"]) - Number(lastPosition["y"]));
-  return nextPosition;
+Race.prototype.computeNextPosition = function() {
+  var lastPosition;
+  var currentPosition = this.positions[this.activePlayer.id][this.turn-1];
+  var nextPosition = {};
+  if (currentPosition) {
+    var lastPosition = this.positions[this.activePlayer.id][this.turn-2];
+  }
+  if (lastPosition) {
+    console.log("lastPosition exists:");
+    nextPosition["x"] = Number(currentPosition["x"]) + (Number(currentPosition["x"]) - Number(lastPosition["x"]));
+    nextPosition["y"] = Number(currentPosition["y"]) + (Number(currentPosition["y"]) - Number(lastPosition["y"]));
+  } else {
+    console.log("lastPosition does not exist");
+    nextPosition["x"] = currentPosition["x"];
+    nextPosition["y"] = currentPosition["y"];
+  }
+
+  this.positions[this.activePlayer.id][this.turn] = {};
+  this.positions[this.activePlayer.id][this.turn] = {};
+
+  this.positions[this.activePlayer.id][this.turn]["x"] = nextPosition["x"];
+  this.positions[this.activePlayer.id][this.turn]["y"] = nextPosition["y"];
 }
 
 Race.prototype.moveActivePlayerTo = function(x, y) {
@@ -106,7 +142,6 @@ Race.prototype.loadPath = function() {
 Race.prototype.render = function() {
   this.track.render();
   this.renderPlayers();
-  this.renderValidMoves();
 }
 
 Race.prototype.renderValidMoves = function() {
@@ -129,8 +164,8 @@ Race.prototype.renderPlayers = function() {
 
   this.players.forEach(function(player) {
     race.renderPastMoves(player);
-    race.renderThisTurn(player);
   });
+  race.renderValidMoves();
 }
 
 Race.prototype.renderPastMoves = function(player) {
@@ -142,11 +177,14 @@ Race.prototype.renderPastMoves = function(player) {
   race.context.lineWidth = lineWidth;
 
   race.context.beginPath();
-  for(var turn = 0; turn < race.turn; turn++) {
-    var x = race.positions[player.id][turn]["x"];
-    var y = race.positions[player.id][turn]["y"];
-    console.log("turn: "+turn+", player: "+player.username+", x: "+x+", y: "+y);
-
+  for(var turn = 0; turn <= race.turn; turn++) {
+    var position = race.positions[player.id][turn];
+    var x;
+    var y;
+    if (position) {
+      var x = position["x"];
+      var y = position["y"];
+    }
     if (x && y) {
       race.context.lineTo(x, y);
       race.context.moveTo(x, y);
@@ -161,22 +199,22 @@ Race.prototype.renderPastMoves = function(player) {
   race.context.lineWidth = 1;
 }
 
-Race.prototype.renderThisTurn = function(player) {
+Race.prototype.renderThisTurn = function() {
   var race = this;
   var lineWidth = 2;
   var radius = 3;
 
-  var movesForTurn = race.positions[player.id][race.turn]
+  var movesForTurn = race.positions[this.activePlayer.id][race.turn]
     if (movesForTurn) {
-      var x = race.positions[player.id][race.turn]["x"];
-      var y = race.positions[player.id][race.turn]["y"];
+      var x = race.positions[this.activePlayer.id][race.turn]["x"];
+      var y = race.positions[this.activePlayer.id][race.turn]["y"];
       if (x && y) {
         race.context.lineTo(x, y);
         race.context.moveTo(x, y);
         race.context.arc(x, y, radius, 0, 2*Math.PI);
         race.context.moveTo(x, y);
-        race.context.strokeStyle = player.color;
-        race.context.fillStyle = player.color;
+        race.context.strokeStyle = this.activePlayer.color;
+        race.context.fillStyle = this.activePlayer.color;
         race.context.lineWidth = lineWidth;
         race.context.fill();
         race.context.stroke();
@@ -185,4 +223,6 @@ Race.prototype.renderThisTurn = function(player) {
   race.context.strokeStyle = "black";
   race.context.fillStyle = "black";
   race.context.lineWidth = 1;
+
+  this.renderValidMoves();
 }
