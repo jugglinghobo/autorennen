@@ -72,7 +72,7 @@ Track.prototype.tiles = function() {
   for(var c = 0; c < this.columns; c++) {
     for(var r = 0; r < this.rows; r++) {
       var tile = this.tileGrid[c][r];
-      if (tile && tile.isTrack()) {
+      if (tile && tile.isTrack) {
         var jsonTile = tile.toJson();
         tiles.push(jsonTile);
       };
@@ -86,9 +86,9 @@ Track.prototype.canBeMovedTo = function(x, y) {
   return tile.canBeMovedTo();
 }
 
-Track.prototype.isBorderPosition = function(x, y) {
+Track.prototype.isBorderPosition = function(dirX, dirY, x, y) {
   var tile = this.tileGrid[x/this.tileSize][y/this.tileSize];
-  return tile.isBorder();
+  return tile.isBorder(dirX, dirY);
 }
 
 Track.prototype.addTile = function(tile) {
