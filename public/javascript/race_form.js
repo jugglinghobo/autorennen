@@ -26,7 +26,7 @@ RaceForm.prototype.initializeFormListeners = function() {
     var data = raceForm.prepareTrackData();
     $.ajax({
       url: path,
-      dataType: "json",
+      dataType: 'json',
       method: 'POST',
       data: data,
     }).success(function(data) {

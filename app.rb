@@ -269,9 +269,6 @@ helpers do
       css_class = "debugging"
       css_class += " hidden" unless settings.debugging
       div = "<div class='#{css_class}'>#{block.call}</div>"
-      puts "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
-      puts div
-      puts "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
       div
     else
       settings.debugging

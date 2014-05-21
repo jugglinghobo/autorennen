@@ -19,7 +19,15 @@ class Race < ActiveRecord::Base
   end
 
   def positions=(positions_hash)
-   write_attribute(:positions, positions_hash.to_json)
+    # convert coordinate values from strings to ints
+    positions_hash.each do |user_id, turn_hash|
+      turn_hash.each do |turn, positions|
+        ["x", "y"].each do |coordinate|
+          safe_to_i(positions, coordinate)
+        end
+      end
+    end
+    write_attribute(:positions, positions_hash.to_json)
   end
 
   def positions
@@ -35,16 +43,9 @@ class Race < ActiveRecord::Base
   def after_play
     next_index = (users.index(active_player)+1) % users.count
     self.active_player = users[next_index]
-    #set_next_positions
     if active_player == initial_player
       self.turn += 1
     end
-  end
-
-  def set_next_positions
-    current_positions = self.positions
-    current_positions[active_player.id.to_s][(turn+1)] = {:x => next_position(:x), :y => next_position(:y)}
-    self.positions = current_positions
   end
 
   def set_initial_active_player
@@ -77,6 +78,10 @@ class Race < ActiveRecord::Base
       }
     end
     write_attribute(:arsenals, arsenals.to_json)
+  end
+
+  def safe_to_i(positions, coordinate)
+    positions[coordinate] = positions[coordinate].to_i if positions[coordinate].match(/\A\d+\Z/)
   end
 
 end

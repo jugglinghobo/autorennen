@@ -19,7 +19,7 @@ Race.prototype.moveActivePlayerTo = function(x, y) {
   if (this.isValidPosition(x, y)) {
     this.positions[this.activePlayer.id][this.turn]["x"] = x;
     this.positions[this.activePlayer.id][this.turn]["y"] = y;
-    this.positions[this.activePlayer.id][this.turn]["crashed"] = false;
+    this.positions[this.activePlayer.id][this.turn]["crashed"] = undefined;
     this.render();
   } else {
     var currentPosition = this.positions[this.activePlayer.id][this.turn-1];
@@ -41,7 +41,6 @@ Race.prototype.getNearestBorderPositionBetween = function(x, y, currentPosition)
 
     positionX = positionX + (directionX * this.track.tileSize);
     positionY = positionY + (directionY * this.track.tileSize);
-    debugger;
   }
   return {x: positionX, y: positionY};
 
@@ -116,7 +115,7 @@ Race.prototype.computePossiblePositions = function() {
     var x = nextPosition["x"];
     var y = nextPosition["y"];
 
-    var nextTile = this.track.tileGrid[Number(x)/this.track.tileSize][Number(y)/this.track.tileSize];
+    var nextTile = this.track.tileGrid[x/this.track.tileSize][y/this.track.tileSize];
     var adjacentTiles = nextTile.adjacentTiles();
     for(c = -1; c < 2; c++) {
       for(r = -1; r < 2; r++) {
@@ -134,15 +133,28 @@ Race.prototype.computeNextPosition = function() {
   var lastPosition;
   var currentPosition = this.positions[this.activePlayer.id][this.turn-1];
   var nextPosition = {};
+
+  // initial position was already set
+
+
   if (currentPosition) {
     var lastPosition = this.positions[this.activePlayer.id][this.turn-2];
-  }
-  if (lastPosition) {
-    nextPosition["x"] = Number(currentPosition["x"]) + (Number(currentPosition["x"]) - Number(lastPosition["x"]));
-    nextPosition["y"] = Number(currentPosition["y"]) + (Number(currentPosition["y"]) - Number(lastPosition["y"]));
+
+    // normal turn, position is calculated by speed of last turn
+    if (lastPosition) {
+      nextPosition["x"] = currentPosition["x"] + (currentPosition["x"] - lastPosition["x"]);
+      nextPosition["y"] = currentPosition["y"] + (currentPosition["y"] - lastPosition["y"]);
+
+    // first real turn, position is initially set position
+    } else {
+      nextPosition["x"] = currentPosition["x"];
+      nextPosition["y"] = currentPosition["y"];
+    }
+
+  // very first turn, setting position on finish line
   } else {
-    nextPosition["x"] = currentPosition["x"];
-    nextPosition["y"] = currentPosition["y"];
+    nextPosition["x"] = undefined;
+    nextPosition["y"] = undefined;
   }
 
   this.positions[this.activePlayer.id][this.turn] = {};
@@ -218,29 +230,30 @@ Race.prototype.renderTurnFor = function(player, turn) {
   if (position) {
     var x = position["x"];
     var y = position["y"];
-  }
-  if (x && y) {
-    race.context.lineTo(x, y);
-    race.context.moveTo(x, y);
-    race.context.arc(x, y, radius, 0, 2*Math.PI);
-    race.context.moveTo(x, y);
-    race.context.fill();
-    race.context.stroke();
-  };
 
-  // render crashed
-  var crashed = position["crashed"];
-  if (crashed) {
-    var crashImg = new Image();
-    crashImg.src = "/images/crash.gif";
-    if (crashImg.complete) {
-      race.context.drawImage(crashImg, x-(race.track.tileSize/2), y-(race.track.tileSize/2), 15, 15);
-    } else {
-      crashImg.onload = function() {
+    if (x && y) {
+      race.context.lineTo(x, y);
+      race.context.moveTo(x, y);
+      race.context.arc(x, y, radius, 0, 2*Math.PI);
+      race.context.moveTo(x, y);
+      race.context.fill();
+      race.context.stroke();
+    };
+
+    // render crashed
+    var crashed = position["crashed"];
+    if (crashed) {
+      var crashImg = new Image();
+      crashImg.src = "/images/crash.gif";
+      if (crashImg.complete) {
         race.context.drawImage(crashImg, x-(race.track.tileSize/2), y-(race.track.tileSize/2), 15, 15);
+      } else {
+        crashImg.onload = function() {
+          race.context.drawImage(crashImg, x-(race.track.tileSize/2), y-(race.track.tileSize/2), 15, 15);
+        };
       };
     };
-  }
+  };
 }
 
 Race.prototype.renderPossiblePositions = function() {
