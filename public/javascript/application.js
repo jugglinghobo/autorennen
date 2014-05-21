@@ -34,3 +34,7 @@ var handleError = function(data) {
       "</div>");
   $("#notifications").find(".notification").alert();
 }
+
+var signum = function(x) {
+  return x == 0 ? 0 : x/Math.abs(x);
+}

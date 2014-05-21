@@ -5,13 +5,12 @@ function Tile(track, column, row, size, jsonTile) {
   this.x = column*size;
   this.y = row*size;
   this.size = size;
+  this.isTrack = false;
   this.memoizedAdjacentTiles;
   this.memoizedTouchingTiles;
-  this.memoizedIsTrack;
-  this.memoizedIsBorder;
 
   if (jsonTile) {
-    this.memoizedIsTrack = true;
+    this.isTrack = true;
     if (jsonTile.pickup) {
       this.pickup = new Pickup(this, jsonTile.pickup);
     };
@@ -29,30 +28,6 @@ Tile.prototype.toJson = function() {
     jsonTile["pickup"] = this.pickup.id;
   };
   return jsonTile;
-}
-
-Tile.prototype.canBeMovedTo = function() {
-  return (this.isTrack() || this.isBorder());
-}
-
-Tile.prototype.isTrack = function() {
-  return this.memoizedIsTrack;
-}
-
-Tile.prototype.isBorder = function() {
-  if (!this.memoizedIsBorder) {
-    var isBorder = false;
-    var up = this.adjacentTile(0, -1);
-    var left = this.adjacentTile(-1, 0);
-    [up, left].forEach(function(tile) {
-      if (tile && tile.isTrack()) {
-        isBorder = true;
-      };
-    });
-
-    this.memoizedIsBorder = isBorder;
-  }
-  return this.memoizedIsBorder;
 }
 
 Tile.prototype.adjacentTiles = function(col, row) {
@@ -86,9 +61,9 @@ Tile.prototype.touchingTiles = function() {
     touchingTiles = [];
     // add self
     touchingTiles.push(this);
-    // add top left tile
+    // add top left
     touchingTiles.push(this.adjacentTile(-1, -1));
-    // add top down
+    // add top
     touchingTiles.push(this.adjacentTile(0, -1));
     // add left
     touchingTiles.push(this.adjacentTile(-1, 0));
@@ -108,6 +83,28 @@ Tile.prototype.adjacentTile = function(col, row) {
   if (tile) {
     return tile;
   };
+}
+
+Tile.prototype.canBeMovedTo = function() {
+  var touchingTiles = this.touchingTiles();
+  var canBeMovedTo = false;
+  touchingTiles.forEach(function(touchingTile) {
+    if (touchingTile.isTrack) {
+       canBeMovedTo = true;
+    };
+  });
+  return canBeMovedTo;
+}
+
+Tile.prototype.isBorder = function() {
+  var touchingTiles = this.touchingTiles();
+  var isBorder = false;
+  touchingTiles.forEach(function(touchingTile) {
+    if (!touchingTile.isTrack) {
+      isBorder = true;
+    };
+  });
+  return isBorder;
 }
 
 Tile.prototype.touchesPickup = function(pickup) {
@@ -131,7 +128,7 @@ Tile.prototype.render = function(context) {
   var y = this.y+0.5;
   var size = this.size;
 
-  if (this.isTrack()) {
+  if (this.isTrack) {
     // tile
     if (this.pickup) {
       this.pickup.render(context);

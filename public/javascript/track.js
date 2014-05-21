@@ -81,6 +81,16 @@ Track.prototype.tiles = function() {
   return tiles;
 };
 
+Track.prototype.canBeMovedTo = function(x, y) {
+  var tile = this.tileGrid[x/this.tileSize][y/this.tileSize];
+  return tile.canBeMovedTo();
+}
+
+Track.prototype.isBorderPosition = function(x, y) {
+  var tile = this.tileGrid[x/this.tileSize][y/this.tileSize];
+  return tile.isBorder();
+}
+
 Track.prototype.addTile = function(tile) {
   // add to grid
   this.tileGrid[tile.column] = this.tileGrid[tile.column] || [];
