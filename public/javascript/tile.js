@@ -85,39 +85,6 @@ Tile.prototype.adjacentTile = function(col, row) {
   };
 }
 
-Tile.prototype.canBeMovedTo = function() {
-  var touchingTiles = this.touchingTiles();
-  var canBeMovedTo = false;
-  touchingTiles.forEach(function(touchingTile) {
-    if (touchingTile.isTrack) {
-       canBeMovedTo = true;
-    };
-  });
-  return canBeMovedTo;
-}
-
-Tile.prototype.isBorder = function() {
-  var touchingTiles = this.touchingTiles();
-  var isBorder = false;
-  touchingTiles.forEach(function(touchingTile) {
-    if (!touchingTile.isTrack) {
-      isBorder = true;
-    };
-  });
-  return isBorder;
-}
-
-Tile.prototype.touchesPickup = function(pickup) {
-  var touch = false;
-  var touchingTiles = this.touchingTiles();
-  touchingTiles.forEach(function(touching) {
-    if (touching && touching.pickup && touching.pickup.id == pickup) {
-      touch = true;
-    }
-  });
-  return touch;
-};
-
 // ====================================
 // RENDERING
 // ====================================

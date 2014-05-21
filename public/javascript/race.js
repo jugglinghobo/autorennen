@@ -16,38 +16,60 @@ function Race(id) {
 }
 
 Race.prototype.moveActivePlayerTo = function(x, y) {
-  if (this.isValidPosition(x, y)) {
-    this.positions[this.activePlayer.id][this.turn]["x"] = x;
-    this.positions[this.activePlayer.id][this.turn]["y"] = y;
-    this.positions[this.activePlayer.id][this.turn]["crashed"] = undefined;
-    this.render();
-  } else {
-    var currentPosition = this.positions[this.activePlayer.id][this.turn-1];
-    var nearestBorder = this.getNearestBorderPositionBetween(x, y, currentPosition);
-    this.positions[this.activePlayer.id][this.turn]["x"] = nearestBorder["x"];
-    this.positions[this.activePlayer.id][this.turn]["y"] = nearestBorder["y"];
-    this.positions[this.activePlayer.id][this.turn]["crashed"] = true;
-    this.render();
+  if (this.isPossiblePosition(x, y)) {
+    if (this.track.canBeMovedTo(x, y)) {
+      this.positions[this.activePlayer.id][this.turn]["x"] = x;
+      this.positions[this.activePlayer.id][this.turn]["y"] = y;
+      this.positions[this.activePlayer.id][this.turn]["crashed"] = undefined;
+      this.render();
+
+    } else {
+      var currentPosition = this.positions[this.activePlayer.id][this.turn-1];
+      var nearestBorder = this.getNearestBorderPositionBetween(x, y, currentPosition);
+
+      this.positions[this.activePlayer.id][this.turn]["x"] = nearestBorder["x"];
+      this.positions[this.activePlayer.id][this.turn]["y"] = nearestBorder["y"];
+      this.positions[this.activePlayer.id][this.turn]["crashed"] = true;
+
+      this.render();
+    }
   }
 }
 
 Race.prototype.getNearestBorderPositionBetween = function(x, y, currentPosition) {
   var directionX, directionY;
-  var positionX = currentPosition["x"];
-  var positionY = currentPosition["y"];
-  while (!this.track.isBorderPosition(positionX, positionY)) {
-    directionX = signum(x - positionX);
-    directionY = signum(y - positionY);
+  var positionX = x;
+  var positionY = y
+  var canBeMovedTo = this.track.canBeMovedTo(positionX, positionY);
+  while (!canBeMovedTo) {
+    this.context.fillStyle = "red";
+    this.context.fillRect(positionX-2, positionY-2, 5, 5);
 
-    positionX = positionX + (directionX * this.track.tileSize);
-    positionY = positionY + (directionY * this.track.tileSize);
+    directionX = (currentPosition.x - positionX)/this.track.tileSize;
+    directionY = (currentPosition.y - positionY)/this.track.tileSize;
+
+    positionX = positionX + directionX;
+    positionY = positionY + directionY;
+    canBeMovedTo = this.track.canBeMovedTo(positionX, positionY);
   }
-  return {x: positionX, y: positionY};
+
+  var borderPosition = {x: this.mapToCanvas(positionX), y: this.mapToCanvas(positionY)};
+  return borderPosition;
 
 }
 
-Race.prototype.isValidPosition = function(x, y) {
-  return this.track.canBeMovedTo(x, y);
+Race.prototype.isPossiblePosition = function(x, y) {
+  var isPossiblePosition = false;
+  this.possiblePositions.forEach(function(possiblePosition) {
+    if (possiblePosition.x == x && possiblePosition.y == y) {
+      isPossiblePosition = true;
+    }
+  });
+  return isPossiblePosition;
+}
+
+Race.prototype.mapToCanvas = function(position) {
+  return this.track.mapToGrid(position) * this.track.tileSize;
 }
 
 // ====================================

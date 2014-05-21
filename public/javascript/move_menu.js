@@ -8,7 +8,7 @@ function MoveMenu(race, canvas) {
       case 'mousedown':
         var mouseX = event.pageX - this.canvas.offsetLeft;
         var mouseY = event.pageY - this.canvas.offsetTop;
-        this.movePlayer(mouseX, mouseY, false);
+        this.movePlayer(mouseX, mouseY);
       break;
     }
   }
@@ -28,8 +28,8 @@ MoveMenu.prototype.removeEraseTrackEventListeners = function() {
   this.canvas.removeEventListener("mousedown", this);
 }
 
-MoveMenu.prototype.movePlayer = function(mouseX, mouseY, dragged) {
-  var x = Math.round(mouseX / this.tileSize) * this.tileSize;
-  var y = Math.round(mouseY / this.tileSize) * this.tileSize;
+MoveMenu.prototype.movePlayer = function(x, y) {
+  var x = this.race.mapToCanvas(x);
+  var y = this.race.mapToCanvas(y);
   this.race.moveActivePlayerTo(x, y);
 };

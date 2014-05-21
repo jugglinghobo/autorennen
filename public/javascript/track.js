@@ -82,13 +82,30 @@ Track.prototype.tiles = function() {
 };
 
 Track.prototype.canBeMovedTo = function(x, y) {
-  var tile = this.tileGrid[x/this.tileSize][y/this.tileSize];
-  return tile.canBeMovedTo();
+  var canBeMovedTo = false;
+  var touchingTiles = this.getTilesForPosition(x, y);
+  touchingTiles.forEach(function(tile) {
+    if (tile.isTrack) {
+      canBeMovedTo = true;
+    };
+  });
+  return canBeMovedTo;
 }
 
-Track.prototype.isBorderPosition = function(dirX, dirY, x, y) {
-  var tile = this.tileGrid[x/this.tileSize][y/this.tileSize];
-  return tile.isBorder(dirX, dirY);
+Track.prototype.getTilesForPosition = function(x, y) {
+  var col = this.mapToGrid(x);
+  var row = this.mapToGrid(y);
+  var upLeft = this.tileGrid[col-1][row-1];
+  var upRight = this.tileGrid[col][row-1];
+  var downLeft = this.tileGrid[col-1][row];
+  var downRight = this.tileGrid[col][row];
+  return [upLeft, upRight, downLeft, downRight];
+}
+
+Track.prototype.isBorderPosition = function(col, row) {
+  var tile = this.tileGrid[col][row];
+  console.log(tile);
+  return tile.isBorder();
 }
 
 Track.prototype.addTile = function(tile) {
@@ -146,6 +163,8 @@ Track.prototype.loadPath = function() {
 // ====================================
 
 Track.prototype.render = function() {
+  this.context.strokeStyle = "black";
+  this.context.fillStyle = "black";
   this.renderGrid();
 };
 
@@ -165,3 +184,7 @@ Track.prototype.renderGrid = function() {
     };
   };
 };
+
+Track.prototype.mapToGrid = function(position) {
+  return Math.round(position / this.tileSize);
+}
