@@ -6,46 +6,46 @@ function TrackMenuManager(track) {
 }
 
 TrackMenuManager.prototype.initializeMenuListeners = function() {
-  var menu = this;
+  var manager = this;
   $("#track-menu").on("change", "#draw-track", function(e) {
     e.preventDefault();
-    menu.disableActiveMenu();
-    menu.activeMenu = new DrawTrackMenu(menu.track, menu.canvas);
+    manager.disableActiveMenu();
+    manager.activeMenu = new DrawTrackMenu(manager.track, manager.canvas);
   });
 
   $("#track-menu").on("change", "#erase-track", function(e) {
     e.preventDefault();
-    menu.disableActiveMenu();
-    menu.activeMenu = new EraseTrackMenu(menu.track, menu.canvas, true);
+    manager.disableActiveMenu();
+    manager.activeMenu = new EraseTrackMenu(manager.track, manager.canvas, true);
   });
 
   $("#track-menu").on("change", "#finish", function(e) {
     e.preventDefault();
-    menu.disableActiveMenu();
-    menu.activeMenu = new PickupMenu(menu.track, menu.canvas, "finish");
+    manager.disableActiveMenu();
+    manager.activeMenu = new PickupMenu(manager.track, manager.canvas, "finish");
   });
 
   $("#track-menu").on("change", "#booster", function(e) {
     e.preventDefault();
-    menu.disableActiveMenu();
-    menu.activeMenu = new PickupMenu(menu.track, menu.canvas, "booster");
+    manager.disableActiveMenu();
+    manager.activeMenu = new PickupMenu(manager.track, manager.canvas, "booster");
   });
 
   $("#track-menu").on("change", "#rocket", function(e) {
     e.preventDefault();
-    menu.disableActiveMenu();
-    menu.activeMenu = new PickupMenu(menu.track, menu.canvas, "rocket");
+    manager.disableActiveMenu();
+    manager.activeMenu = new PickupMenu(manager.track, manager.canvas, "rocket");
   });
 
   $("#track-menu").on("change", "#mine", function(e) {
     e.preventDefault();
-    menu.disableActiveMenu();
-    menu.activeMenu = new PickupMenu(menu.track, menu.canvas, "mine");
+    manager.disableActiveMenu();
+    manager.activeMenu = new PickupMenu(manager.track, manager.canvas, "mine");
   });
 
   $("#track-menu").on("click", "#clear", function(e) {
     e.preventDefault();
-    menu.track.clear();
+    manager.track.clear();
   });
 };
 

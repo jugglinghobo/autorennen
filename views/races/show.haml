@@ -2,6 +2,7 @@
 %script{:src => "/javascript/race_form.js"}
 %script{:src => "/javascript/race_menu_manager.js"}
 %script{:src => "/javascript/move_menu.js"}
+%script{:src => "/javascript/booster_menu.js"}
 %script{:src => "/javascript/track.js"}
 %script{:src => "/javascript/tile.js"}
 %script{:src => "/javascript/pickup.js"}
@@ -53,12 +54,18 @@
                 %label.btn.btn-default.active
                   move
                   %input#move{:type => "radio", :name => "move", :checked => "checked"}
-                - ["booster", "rocket", "mine"].each do |pickup|
+                - ["rocket", "mine", "booster"].each do |pickup|
                   %label.btn.btn-default
                     %image{:id => "pickup-#{pickup}", :src => "/images/#{pickup}.png", :width => "15", :height => "15"}
-                    %span{:class => "pickup #{pickup}"}
-                      = "#{arsenal[pickup]}"
+                      %span{:class => "pickup #{pickup}"}
+                        = "#{arsenal[pickup]}"
                     %input{:id => pickup, :type => "radio", :name => pickup}
+              .btn-group
+                - booster_count = arsenal["booster"]
+                %select#booster-select.hidden.form-control
+                  - (booster_count+1).times do |i|
+                    %option= i
+
           .col-md-2
             .btn-group.pull-right
               %input#save-move.btn.btn-success{:type => "submit", :value => "save move"}

@@ -21,10 +21,10 @@ MoveMenu.prototype.addMoveMenuListeners = function() {
 }
 
 MoveMenu.prototype.disable = function() {
-  this.removeEraseTrackEventListeners();
+  this.removeMoveMenuListeners();
 }
 
-MoveMenu.prototype.removeEraseTrackEventListeners = function() {
+MoveMenu.prototype.removeMoveMenuListeners = function() {
   this.canvas.removeEventListener("mousedown", this);
 }
 

@@ -14,6 +14,17 @@ class Race < ActiveRecord::Base
     name
   end
 
+  def arsenals=(arsenals_hash)
+    # convert coordinate values from strings to ints
+    arsenals_hash.each do |user_id, pickup_hash|
+      pickup_hash.keys.each do |pickup|
+        safe_to_i(pickup_hash, pickup)
+      end
+    end
+    binding.pry
+    write_attribute(:arsenals, arsenals_hash.to_json)
+  end
+
   def arsenals
     JSON.parse(read_attribute(:arsenals))
   end

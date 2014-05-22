@@ -70,6 +70,12 @@ Race.prototype.updatePickupCounter = function(type) {
   $(".pickup."+type+"").html(counter);
 }
 
+Race.prototype.updatePickup = function(type, count) {
+  this.arsenals[this.activePlayer.id][type] -= count;
+  this.updatePickupCounter(type);
+}
+
+
 Race.prototype.getNearestBorderPositionBetween = function(x, y, currentPosition) {
   var directionX, directionY;
   var positionX = x;
@@ -103,6 +109,10 @@ Race.prototype.mapToCanvas = function(position) {
   return this.track.mapToGrid(position) * this.track.tileSize;
 }
 
+Race.prototype.getActiveArsenal = function(pickup) {
+  return this.arsenals[this.activePlayer.id][pickup];
+}
+
 // ====================================
 // INITIALIZING
 // ====================================
@@ -111,7 +121,6 @@ Race.prototype.initialize = function() {
   this.loadData();
   this.loadCurrentUser();
   this.loadCanvas();
-  //this.computeNextPosition();
   this.setPossiblePositions();
   this.render();
 };
@@ -156,9 +165,10 @@ Race.prototype.loadCanvas = function() {
   this.context = this.canvas.getContext("2d");
 }
 
-Race.prototype.setPossiblePositions = function() {
+Race.prototype.setPossiblePositions = function(radius) {
+  var radius = radius || 1;
   var possiblePositions = [];
-  var nextPosition = this.getNextPosition(); //this.positions[this.activePlayer.id][this.turn];
+  var nextPosition = this.getNextPosition();
 
   // if first turn, set possible positions to finish line
   // else compute based on last turn's position
@@ -169,10 +179,10 @@ Race.prototype.setPossiblePositions = function() {
     var y = nextPosition["y"];
 
     var nextTile = this.track.tileGrid[x/this.track.tileSize][y/this.track.tileSize];
-    var adjacentTiles = nextTile.adjacentTiles();
-    for(c = -1; c < 2; c++) {
-      for(r = -1; r < 2; r++) {
-        var adjacentTile = adjacentTiles[c][r];
+
+    for(c = -radius; c <= radius; c++) {
+      for(r = -radius; r <= radius; r++) {
+        var adjacentTile = nextTile.adjacentTile(c, r);
         if (adjacentTile) {
           possiblePositions.push(adjacentTile);
         };
@@ -180,6 +190,11 @@ Race.prototype.setPossiblePositions = function() {
     };
   };
   this.possiblePositions = possiblePositions;
+}
+
+Race.prototype.updatePossiblePositions = function(radius) {
+  this.setPossiblePositions(radius);
+  this.render();
 }
 
 Race.prototype.getNextPosition = function() {

@@ -30,32 +30,6 @@ Tile.prototype.toJson = function() {
   return jsonTile;
 }
 
-Tile.prototype.adjacentTiles = function(col, row) {
-  if (!this.memoizedAdjacentTiles) {
-    adjacentTiles = {};
-
-    // left column
-    adjacentTiles[-1] = {};
-    adjacentTiles[-1][-1] = this.adjacentTile(-1, -1);
-    adjacentTiles[-1][0] = this.adjacentTile(-1, 0);
-    adjacentTiles[-1][1] = this.adjacentTile(-1, 1);
-
-    // same column
-    adjacentTiles[0] = {};
-    adjacentTiles[0][-1] = this.adjacentTile(0, -1);
-    adjacentTiles[0][0] = this.adjacentTile(0, 0);
-    adjacentTiles[0][1] = this.adjacentTile(0, 1);
-
-    // right column
-    adjacentTiles[1] = {};
-    adjacentTiles[1][-1] = this.adjacentTile(1, -1);
-    adjacentTiles[1][0] = this.adjacentTile(1, 0);
-    adjacentTiles[1][1] = this.adjacentTile(1, 1);
-    this.memoizedAdjacentTiles = adjacentTiles;
-  };
-  return this.memoizedAdjacentTiles;
-}
-
 Tile.prototype.touchingTiles = function() {
   if (!this.memoizedTouchingTiles) {
     touchingTiles = [];
