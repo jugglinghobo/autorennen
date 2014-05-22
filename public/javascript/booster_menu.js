@@ -11,25 +11,23 @@ function BoosterMenu(race, canvas) {
     }
   }
 
-  this.displayBoosterSelect();
+  this.activateBoosterSelect();
   this.addBoosterMenuListeners();
 }
 
 BoosterMenu.prototype.useBooster = function() {
-  var selectedBoosters = Number($("#booster-select").val());
-  var usedBoosters = selectedBoosters - this.selectedBoosters;
-  // this adds previously used boosters back to the arsenal
-  race.updatePickup("booster", usedBoosters);
-  race.updatePossiblePositions(selectedBoosters+1);
-  this.selectedBoosters = selectedBoosters;
+  var boosterCount = Number($("#booster-select").val());
+  this.race.useBoosters(boosterCount);
+  // select movement menu
+  $("#move").trigger("click");
 }
 
-BoosterMenu.prototype.displayBoosterSelect = function() {
-  $("#booster-select").removeClass("hidden");
+BoosterMenu.prototype.activateBoosterSelect = function() {
+  $("#booster-select").prop("disabled", false);
 }
 
-BoosterMenu.prototype.hideBoosterSelect = function() {
-  $("#booster-select").addClass("hidden");
+BoosterMenu.prototype.deactivateBoosterSelect = function() {
+  $("#booster-select").prop("disabled", true);
 }
 
 BoosterMenu.prototype.addBoosterMenuListeners = function() {
@@ -38,7 +36,7 @@ BoosterMenu.prototype.addBoosterMenuListeners = function() {
 
 BoosterMenu.prototype.disable = function() {
   this.removeBoosterMenuListeners();
-  this.hideBoosterSelect();
+  this.deactivateBoosterSelect();
 }
 
 BoosterMenu.prototype.removeBoosterMenuListeners = function() {

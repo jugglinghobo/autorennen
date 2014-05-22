@@ -11,6 +11,7 @@ function Race(id) {
   this.currentUser;
   this.positions;
   this.possiblePositions;
+  this.pickupsInUse;
   this.initialize();
   window.race = this;
 }
@@ -70,9 +71,16 @@ Race.prototype.updatePickupCounter = function(type) {
   $(".pickup."+type+"").html(counter);
 }
 
-Race.prototype.updatePickup = function(type, count) {
-  this.arsenals[this.activePlayer.id][type] -= count;
+Race.prototype.usePickup = function(type, count) {
+  this.arsenals[this.activePlayer.id][type] -= (count - this.pickupsInUse);
+  this.pickupsInUse = count;
   this.updatePickupCounter(type);
+}
+
+Race.prototype.useBoosters = function(boosterCount) {
+  this.usePickup("booster", boosterCount);
+  this.setPossiblePositions();
+  this.render();
 }
 
 
@@ -121,6 +129,7 @@ Race.prototype.initialize = function() {
   this.loadData();
   this.loadCurrentUser();
   this.loadCanvas();
+  this.pickupsInUse = 0;
   this.setPossiblePositions();
   this.render();
 };
@@ -165,8 +174,8 @@ Race.prototype.loadCanvas = function() {
   this.context = this.canvas.getContext("2d");
 }
 
-Race.prototype.setPossiblePositions = function(radius) {
-  var radius = radius || 1;
+Race.prototype.setPossiblePositions = function() {
+  var radius = 1 + this.pickupsInUse;
   var possiblePositions = [];
   var nextPosition = this.getNextPosition();
 
@@ -190,11 +199,6 @@ Race.prototype.setPossiblePositions = function(radius) {
     };
   };
   this.possiblePositions = possiblePositions;
-}
-
-Race.prototype.updatePossiblePositions = function(radius) {
-  this.setPossiblePositions(radius);
-  this.render();
 }
 
 Race.prototype.getNextPosition = function() {

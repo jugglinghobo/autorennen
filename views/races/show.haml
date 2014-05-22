@@ -62,7 +62,7 @@
                     %input{:id => pickup, :type => "radio", :name => pickup}
               .btn-group
                 - booster_count = arsenal["booster"]
-                %select#booster-select.hidden.form-control
+                %select#booster-select.form-control{:disabled => "disabled"}
                   - (booster_count+1).times do |i|
                     %option= i
 
