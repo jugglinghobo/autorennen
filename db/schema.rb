@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 20140515002122) do
     t.integer  "tile_size",  default: 15
     t.integer  "user_id"
     t.text     "tiles",      default: "[]"
+    t.text     "pickups",    default: "[]"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

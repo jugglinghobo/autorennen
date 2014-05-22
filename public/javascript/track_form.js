@@ -63,6 +63,7 @@ TrackForm.prototype.prepareTrackData = function() {
   data["track"]["columns"] = $("#track-columns").val();
   data["track"]["rows"] = $("#track-rows").val();
   data["track"]["user_id"] = $("#track-user-id").val();
-  data["track"]["tiles"] = this.track.tiles();
+  data["track"]["tiles"] = this.track.jsonTiles();
+  data["track"]["pickups"] = this.track.jsonPickups();
   return data;
 }

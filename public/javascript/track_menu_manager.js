@@ -22,25 +22,25 @@ TrackMenuManager.prototype.initializeMenuListeners = function() {
   $("#track-menu").on("change", "#finish", function(e) {
     e.preventDefault();
     menu.disableActiveMenu();
-    menu.activeMenu = new PickupMenu(menu.track, menu.canvas, "pickup-finish");
+    menu.activeMenu = new PickupMenu(menu.track, menu.canvas, "finish");
   });
 
   $("#track-menu").on("change", "#booster", function(e) {
     e.preventDefault();
     menu.disableActiveMenu();
-    menu.activeMenu = new PickupMenu(menu.track, menu.canvas, "pickup-booster");
+    menu.activeMenu = new PickupMenu(menu.track, menu.canvas, "booster");
   });
 
   $("#track-menu").on("change", "#rocket", function(e) {
     e.preventDefault();
     menu.disableActiveMenu();
-    menu.activeMenu = new PickupMenu(menu.track, menu.canvas, "pickup-rocket");
+    menu.activeMenu = new PickupMenu(menu.track, menu.canvas, "rocket");
   });
 
   $("#track-menu").on("change", "#mine", function(e) {
     e.preventDefault();
     menu.disableActiveMenu();
-    menu.activeMenu = new PickupMenu(menu.track, menu.canvas, "pickup-mine");
+    menu.activeMenu = new PickupMenu(menu.track, menu.canvas, "mine");
   });
 
   $("#track-menu").on("click", "#clear", function(e) {

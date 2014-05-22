@@ -24,4 +24,19 @@ class Track < ActiveRecord::Base
 
     write_attribute(:tiles, tiles_hash.values.to_json)
   end
+
+  def pickups
+    JSON.parse(read_attribute(:pickups))
+  end
+
+  def pickups=(pickups_hash)
+    pickups_hash.values.each do |pickup|
+      pickup.each do |attribute, value|
+        pickup[attribute] = value.to_i if INT_ATTRS.include?(attribute)
+      end
+    end
+
+    write_attribute(:pickups, pickups_hash.values.to_json)
+  end
+
 end

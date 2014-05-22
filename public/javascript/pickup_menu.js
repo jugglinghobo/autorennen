@@ -46,10 +46,7 @@ PickupMenu.prototype.addPickupEventListeners = function() {
 PickupMenu.prototype.addPickupAt = function(mouseX, mouseY) {
   var x = Math.floor(mouseX / this.tileSize) * this.tileSize;
   var y = Math.floor(mouseY / this.tileSize) * this.tileSize;
-  var col = x/this.tileSize;
-  var row = y/this.tileSize;
-
-  this.track.addPickupAt(col, row, this.pickup);
+  this.track.addPickupAt(x, y, this.pickup);
 };
 
 PickupMenu.prototype.disable = function() {

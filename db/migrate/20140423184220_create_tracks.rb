@@ -7,6 +7,7 @@ class CreateTracks < ActiveRecord::Migration
      t.integer :tile_size, :default => 15
      t.references :user
      t.text :tiles, :default => "[]"
+     t.text :pickups, :default => "[]"
      t.timestamps
    end
  end

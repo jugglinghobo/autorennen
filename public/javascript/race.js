@@ -42,9 +42,6 @@ Race.prototype.getNearestBorderPositionBetween = function(x, y, currentPosition)
   var positionY = y
   var canBeMovedTo = this.track.canBeMovedTo(positionX, positionY);
   while (!canBeMovedTo) {
-    this.context.fillStyle = "red";
-    this.context.fillRect(positionX-2, positionY-2, 5, 5);
-
     directionX = (currentPosition.x - positionX)/this.track.tileSize;
     directionY = (currentPosition.y - positionY)/this.track.tileSize;
 
