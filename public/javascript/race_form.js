@@ -53,5 +53,6 @@ RaceForm.prototype.prepareTrackData = function() {
   data["race"] = {};
   data["race"]["positions"] = this.race.positions;
   data["race"]["arsenals"] = this.race.arsenals;
+  data["race"]["items"] = this.race.jsonItems();
   return data;
 }

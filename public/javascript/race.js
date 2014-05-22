@@ -5,44 +5,37 @@ function Race(id) {
   this.activePlayer;
   this.players;
   this.track;
+  this.positions;
   this.arsenals;
+  this.items;
   this.canvas;
   this.context;
   this.currentUser;
-  this.positions;
-  this.possiblePositions;
-  this.pickupsInUse;
+  this.boostersInUse;
   this.initialize();
   window.race = this;
 }
 
 Race.prototype.moveActivePlayerTo = function(x, y) {
-  if (this.isPossiblePosition(x, y)) {
-    var currentPosition = this.positions[this.activePlayer.id][this.turn-1];
+  var currentPosition = this.positions[this.activePlayer.id][this.turn-1];
 
-    // remove pickups of aleady made moves for this round
-    var activePosition = this.positions[this.activePlayer.id][this.turn];
-    if (activePosition) {
-      this.dropPickupsAt(activePosition.x, activePosition.y);
-    };
+  // remove pickups of aleady made moves for this round
+  var activePosition = this.positions[this.activePlayer.id][this.turn];
+  if (activePosition) {
+    this.dropPickupsAt(activePosition.x, activePosition.y);
+  };
 
-    var crashed;
-    // crash
-    if (!this.track.canBeMovedTo(x, y)) {
-      var nearestBorder = this.getNearestBorderPositionBetween(x, y, currentPosition);
-      x = nearestBorder["x"];
-      y = nearestBorder["y"];
-      crashed = true;
-    }
-
-    this.positions[this.activePlayer.id][this.turn] = this.positions[this.activePlayer.id][this.turn] || {}
-    this.positions[this.activePlayer.id][this.turn]["x"] = x;
-    this.positions[this.activePlayer.id][this.turn]["y"] = y;
-    this.positions[this.activePlayer.id][this.turn]["crashed"] = crashed;
-
-    this.pickupPickupAt(x, y);
-    this.render();
+  var crashed;
+  // crash
+  if (!this.track.canBeMovedTo(x, y)) {
+    var nearestBorder = this.getNearestBorderPositionBetween(x, y, currentPosition);
+    x = nearestBorder["x"];
+    y = nearestBorder["y"];
+    crashed = true;
   }
+
+  this.setCurrentPosition(x, y);
+  this.positions[this.activePlayer.id][this.turn]["crashed"] = crashed;
 }
 
 Race.prototype.pickupPickupAt = function(x, y) {
@@ -71,16 +64,27 @@ Race.prototype.updatePickupCounter = function(type) {
   $(".pickup."+type+"").html(counter);
 }
 
-Race.prototype.usePickup = function(type, count) {
-  this.arsenals[this.activePlayer.id][type] -= (count - this.pickupsInUse);
-  this.pickupsInUse = count;
-  this.updatePickupCounter(type);
+Race.prototype.addMine = function(x, y) {
+  var mines = this.arsenals[this.activePlayer.id]["mine"];
+  if (mines > 0) {
+    this.usePickup("mine", 1);
+    this.addItemAt(x, y, "activeMine");
+  };
 }
+
+Race.prototype.addItemAt = function(x, y, type) {
+  var item = new Item(this, type, x, y, this.track.tileSize);
+  this.items.push(item);
+};
 
 Race.prototype.useBoosters = function(boosterCount) {
   this.usePickup("booster", boosterCount);
-  this.setPossiblePositions();
-  this.render();
+  this.boostersInUse = boosterCount;
+}
+
+Race.prototype.usePickup = function(type, count) {
+  this.arsenals[this.activePlayer.id][type] -= (count - this.boostersInUse);
+  this.updatePickupCounter(type);
 }
 
 
@@ -103,22 +107,16 @@ Race.prototype.getNearestBorderPositionBetween = function(x, y, currentPosition)
 
 }
 
-Race.prototype.isPossiblePosition = function(x, y) {
-  var isPossiblePosition = false;
-  this.possiblePositions.forEach(function(possiblePosition) {
-    if (possiblePosition.x == x && possiblePosition.y == y) {
-      isPossiblePosition = true;
-    }
-  });
-  return isPossiblePosition;
-}
-
 Race.prototype.mapToCanvas = function(position) {
   return this.track.mapToGrid(position) * this.track.tileSize;
 }
 
 Race.prototype.getActiveArsenal = function(pickup) {
   return this.arsenals[this.activePlayer.id][pickup];
+}
+
+Race.prototype.setTargetTiles = function(tiles) {
+  this.targetTiles = tiles;
 }
 
 // ====================================
@@ -129,9 +127,9 @@ Race.prototype.initialize = function() {
   this.loadData();
   this.loadCurrentUser();
   this.loadCanvas();
-  this.pickupsInUse = 0;
-  this.setPossiblePositions();
-  this.render();
+  this.boostersInUse = 0;
+  this.targetTiles = [];
+  this.setCurrentPosition();
 };
 
 Race.prototype.loadData = function() {
@@ -151,9 +149,20 @@ Race.prototype.setData = function(data) {
   this.turn = data.turn;
   this.arsenals = data.arsenals;
   this.positions = data.positions;
+  this.items = this.buildItems(data.items);
   this.activePlayer = data.active_player;
   this.players = data.users;
   this.track = new Track(data.track_id);
+}
+
+Race.prototype.buildItems = function(items) {
+  var item_array = [];
+  var race = this;
+  items.forEach(function(item_data) {
+    var item = new Item(race, item_data.type, item_data.x, item_data.y, item_data.size);
+    item_array.push(item);
+  });
+  return item_array;
 }
 
 Race.prototype.loadCurrentUser = function() {
@@ -174,31 +183,23 @@ Race.prototype.loadCanvas = function() {
   this.context = this.canvas.getContext("2d");
 }
 
-Race.prototype.setPossiblePositions = function() {
-  var radius = 1 + this.pickupsInUse;
-  var possiblePositions = [];
-  var nextPosition = this.getNextPosition();
-
-  // if first turn, set possible positions to finish line
-  // else compute based on last turn's position
-  if (this.turn == 0) {
-    possiblePositions = this.track.getFinishLinePositions();
-  } else {
-    var x = nextPosition["x"];
-    var y = nextPosition["y"];
-
-    var nextTile = this.track.tileGrid[x/this.track.tileSize][y/this.track.tileSize];
-
-    for(c = -radius; c <= radius; c++) {
-      for(r = -radius; r <= radius; r++) {
-        var adjacentTile = nextTile.adjacentTile(c, r);
-        if (adjacentTile) {
-          possiblePositions.push(adjacentTile);
-        };
-      };
+Race.prototype.setCurrentPosition = function(x, y) {
+  if (!(x && y)) {
+    var lastPosition = this.positions[this.activePlayer.id][this.turn-1];
+    if (lastPosition) {
+      this.positions[this.activePlayer.id][this.turn] = {};
+      x = lastPosition.x;
+      y = lastPosition.y;
     };
   };
-  this.possiblePositions = possiblePositions;
+
+  this.positions[this.activePlayer.id][this.turn]["x"] = x;
+  this.positions[this.activePlayer.id][this.turn]["y"] = y;
+  this.pickupPickupAt(x, y);
+}
+
+Race.prototype.getCurrentPosition = function() {
+  return this.positions[this.activePlayer.id][this.turn];
 }
 
 Race.prototype.getNextPosition = function() {
@@ -230,16 +231,18 @@ Race.prototype.getNextPosition = function() {
   }
 
   return nextPosition;
-
-  //this.positions[this.activePlayer.id][this.turn] = {};
-  //this.positions[this.activePlayer.id][this.turn] = {};
-
-  //this.positions[this.activePlayer.id][this.turn]["x"] = nextPosition["x"];
-  //this.positions[this.activePlayer.id][this.turn]["y"] = nextPosition["y"];
 }
 
 Race.prototype.loadPath = function() {
   return "/races/"+this.id+".json";
+}
+
+Race.prototype.jsonItems = function() {
+  var jsonitems = [];
+  this.items.forEach(function(item) {
+    jsonitems.push(item.toJson());
+  });
+  return jsonitems;
 }
 
 // ====================================
@@ -248,7 +251,15 @@ Race.prototype.loadPath = function() {
 
 Race.prototype.render = function() {
   this.track.render();
+  this.renderItems();
   this.renderPlayers();
+}
+
+Race.prototype.renderItems = function() {
+  var context = this.context;
+  this.items.forEach(function(item) {
+    item.render(context);
+  });
 }
 
 Race.prototype.renderPlayers = function() {
@@ -261,7 +272,6 @@ Race.prototype.renderPlayers = function() {
     race.renderPastPositions(player);
     race.renderThisRound(player);
   });
-  race.renderPossiblePositions();
 }
 
 Race.prototype.renderPastPositions = function(player) {
@@ -330,16 +340,4 @@ Race.prototype.renderTurnFor = function(player, turn) {
   };
 }
 
-Race.prototype.renderPossiblePositions = function() {
-  var race = this;
-  var lineWidth = 1;
-  var radius = 3;
-  this.possiblePositions.forEach(function(possiblePosition) {
-    race.context.beginPath();
-    race.context.strokeStyle = race.activePlayer.color;
-    race.context.arc(possiblePosition.x, possiblePosition.y, radius, 0, 2*Math.PI);
-    race.context.stroke();
-    race.context.strokeStyle = "black"
-  });
-}
 

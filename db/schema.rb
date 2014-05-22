@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 20140515002122) do
     t.integer  "turn",              default: 0
     t.text     "arsenals",          default: "{}"
     t.text     "positions",         default: "{}"
+    t.text     "items",             default: "[]"
     t.integer  "track_id"
     t.integer  "active_player_id"
     t.integer  "initial_player_id"
@@ -28,6 +29,17 @@ ActiveRecord::Schema.define(version: 20140515002122) do
   create_table "races_users", id: false, force: true do |t|
     t.integer "race_id"
     t.integer "user_id"
+  end
+
+  create_table "tiles", force: true do |t|
+    t.integer  "x"
+    t.integer  "y"
+    t.integer  "size"
+    t.integer  "column"
+    t.integer  "row"
+    t.integer  "track_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "tracks", force: true do |t|

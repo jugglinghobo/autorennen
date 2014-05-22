@@ -56,24 +56,34 @@ Track.prototype.getTilesForPosition = function(x, y) {
   return [upLeft, upRight, downLeft, downRight];
 }
 
+Track.prototype.getAdjacentPositions = function(x, y) {
+  var positions = [];
+  for (i = -1; i <= 1; i++) {
+    for (j = -1; j <= 1; j++) {
+      position = {x: x+(i*this.tileSize), y: y+(j*this.tileSize)};
+      if (!(this.findByCoordinates(positions, position).length > 0)) {
+        positions.push(position);
+      };
+    };
+  };
+  return positions;
+}
+
 Track.prototype.addTile = function(tile) {
   // add to grid
   this.tileGrid[tile.column] = this.tileGrid[tile.column] || [];
   this.tileGrid[tile.column][tile.row] = tile;
-  this.render();
 };
 
-Track.prototype.addPickupAt = function(x, y, pickup) {
-  var pickup = new Pickup(this, pickup, x, y, this.tileSize);
-  this.removePickupAt(x, y);
+Track.prototype.addPickupAt = function(x, y, type) {
+  var pickup = new Pickup(this, type, x, y, this.tileSize);
+  this.removePickupsAt(x, y);
   this.pickups.push(pickup);
-  this.render();
 }
 
 Track.prototype.clearAt = function(x, y) {
   this.removeTileAt(x, y);
-  this.removePickupAt(x, y);
-  this.render();
+  this.removePickupsAt(x, y);
 }
 
 Track.prototype.clear = function() {
@@ -83,7 +93,6 @@ Track.prototype.clear = function() {
     };
   };
   this.pickups = [];
-  this.render();
 };
 
 Track.prototype.removeTileAt = function(x, y) {
@@ -92,9 +101,8 @@ Track.prototype.removeTileAt = function(x, y) {
   this.tileGrid[col][row] = undefined;
 }
 
-Track.prototype.removePickupAt = function(x, y) {
+Track.prototype.removePickupsAt = function(x, y) {
   var pickups = this.pickups.filter(function(pickup) { return !(pickup.x == x && pickup.y == y) });
-  console.log(pickups);
   this.pickups = pickups;
 }
 
@@ -161,7 +169,6 @@ Track.prototype.findByCoordinates = function(array, object) {
 Track.prototype.initialize = function() {
   this.loadData();
   this.loadCanvas();
-  this.render();
 };
 
 Track.prototype.loadData = function() {
@@ -185,7 +192,6 @@ Track.prototype.loadCanvas = function() {
 
 Track.prototype.update = function(data) {
   this.setData(data);
-  this.render();
 };
 
 Track.prototype.setData = function(data) {

@@ -2,10 +2,12 @@
 %script{:src => "/javascript/race_form.js"}
 %script{:src => "/javascript/race_menu_manager.js"}
 %script{:src => "/javascript/move_menu.js"}
+%script{:src => "/javascript/mine_menu.js"}
 %script{:src => "/javascript/booster_menu.js"}
 %script{:src => "/javascript/track.js"}
 %script{:src => "/javascript/tile.js"}
 %script{:src => "/javascript/pickup.js"}
+%script{:src => "/javascript/item.js"}
 #race-container
   - arsenal = @race.arsenal_for(current_user)
 
@@ -62,9 +64,11 @@
                     %input{:id => pickup, :type => "radio", :name => pickup}
               .btn-group
                 - booster_count = arsenal["booster"]
-                %select#booster-select.form-control{:disabled => "disabled"}
+                %select#booster-select.form-control
                   - (booster_count+1).times do |i|
-                    %option= i
+                    %option
+                      %image{:id => "b", :src => "/images/booster.png", :width => "15", :height => "15"}
+                      = i
 
           .col-md-2
             .btn-group.pull-right

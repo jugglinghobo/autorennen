@@ -35,6 +35,7 @@ function DrawTrackMenu(track, canvas) {
     }
   }
   this.addDrawTrackEventListeners();
+  this.render();
 }
 
 DrawTrackMenu.prototype.addDrawTrackEventListeners = function() {
@@ -62,5 +63,10 @@ DrawTrackMenu.prototype.addTile = function(mouseX, mouseY, dragged) {
   var row = y/this.tileSize;
   var tile = new Tile(this.track, col, row, this.tileSize, true);
   this.track.addTile(tile);
+  this.render();
 };
+
+DrawTrackMenu.prototype.render = function() {
+  this.track.render();
+}
 

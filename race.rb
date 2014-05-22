@@ -1,4 +1,6 @@
 class Race < ActiveRecord::Base
+  INT_ATTRS = ["x", "y", "size"]
+
   has_and_belongs_to_many :users
   belongs_to :track
   belongs_to :active_player, :class_name => "User"
@@ -21,7 +23,6 @@ class Race < ActiveRecord::Base
         safe_to_i(pickup_hash, pickup)
       end
     end
-    binding.pry
     write_attribute(:arsenals, arsenals_hash.to_json)
   end
 
@@ -43,6 +44,20 @@ class Race < ActiveRecord::Base
 
   def positions
     JSON.parse(read_attribute(:positions))
+  end
+
+  def items=(items_hash)
+    items_hash.values.each do |item|
+      item.each do |attribute, value|
+        item[attribute] = value.to_i if INT_ATTRS.include?(attribute)
+      end
+    end
+
+    write_attribute(:items, items_hash.values.to_json)
+  end
+
+  def items
+    JSON.parse(read_attribute(:items))
   end
 
   def arsenal_for(user)

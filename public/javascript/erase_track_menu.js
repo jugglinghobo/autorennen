@@ -63,5 +63,10 @@ EraseTrackMenu.prototype.removeAt = function(mouseX, mouseY, dragged) {
   var x = Math.floor(mouseX / this.tileSize) * this.tileSize;
   var y = Math.floor(mouseY / this.tileSize) * this.tileSize;
   this.track.clearAt(x, y);
+  this.render();
 };
+
+EraseTrackMenu.prototype.render = function() {
+  this.track.render();
+}
 

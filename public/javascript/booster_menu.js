@@ -1,6 +1,5 @@
-function BoosterMenu(race, canvas) {
+function BoosterMenu(race) {
   this.race = race;
-  this.canvas = canvas;
   this.boosterOptions;
   this.selectedBoosters = 0;
   this.handleEvent = function(event) {
@@ -11,7 +10,6 @@ function BoosterMenu(race, canvas) {
     }
   }
 
-  this.activateBoosterSelect();
   this.addBoosterMenuListeners();
 }
 
@@ -19,15 +17,8 @@ BoosterMenu.prototype.useBooster = function() {
   var boosterCount = Number($("#booster-select").val());
   this.race.useBoosters(boosterCount);
   // select movement menu
+  $("#booster-select").trigger("blur");
   $("#move").trigger("click");
-}
-
-BoosterMenu.prototype.activateBoosterSelect = function() {
-  $("#booster-select").prop("disabled", false);
-}
-
-BoosterMenu.prototype.deactivateBoosterSelect = function() {
-  $("#booster-select").prop("disabled", true);
 }
 
 BoosterMenu.prototype.addBoosterMenuListeners = function() {
@@ -36,7 +27,6 @@ BoosterMenu.prototype.addBoosterMenuListeners = function() {
 
 BoosterMenu.prototype.disable = function() {
   this.removeBoosterMenuListeners();
-  this.deactivateBoosterSelect();
 }
 
 BoosterMenu.prototype.removeBoosterMenuListeners = function() {
