@@ -9,6 +9,7 @@ function Track(id) {
   this.tileSize;
   this.canvas;
   this.context;
+  this.pickups;
   this.tileGrid;
   this.initialize();
   window.t = this;
@@ -25,15 +26,24 @@ Track.prototype.canBeMovedTo = function(x, y) {
   return canBeMovedTo;
 }
 
-Track.prototype.hasPickupAt = function(x, y, pickup) {
-  var hasPickup = false;
-  var touchingTiles = this.getTilesForPosition(x, y);
-  touchingTiles.forEach(function(tile) {
-    if (tile.pickup && tile.pickup.id == pickup) {
-      hasPickup = true;
-    };
+Track.prototype.getPickupsAt = function(x, y) {
+  var pickups = []
+  this.pickups.forEach(function(pickup) {
+    var isThere = false;
+    var positions = pickup.positions();
+
+    positions.forEach(function(position) {
+      if (position.x == x && position.y == y) {
+        isThere = true;
+      };
+    });
+
+    if (isThere) {
+      pickups.push(pickup);
+    }
   });
-  return hasPickup;
+
+  return pickups;
 }
 
 Track.prototype.getTilesForPosition = function(x, y) {
@@ -53,14 +63,16 @@ Track.prototype.addTile = function(tile) {
   this.render();
 };
 
-Track.prototype.removeTileAt = function(column, row) {
-  this.tileGrid[column][row] = undefined;
+Track.prototype.addPickupAt = function(x, y, pickup) {
+  var pickup = new Pickup(this, pickup, x, y, this.tileSize);
+  this.removePickupAt(x, y);
+  this.pickups.push(pickup);
   this.render();
 }
 
-Track.prototype.addPickupAt = function(x, y, pickup) {
-  var pickup = new Pickup(this, pickup, x, y, this.tileSize)
-  this.pickups.push(pickup);
+Track.prototype.clearAt = function(x, y) {
+  this.removeTileAt(x, y);
+  this.removePickupAt(x, y);
   this.render();
 }
 
@@ -74,11 +86,30 @@ Track.prototype.clear = function() {
   this.render();
 };
 
+Track.prototype.removeTileAt = function(x, y) {
+  var col = this.mapToGrid(x);
+  var row = this.mapToGrid(y);
+  this.tileGrid[col][row] = undefined;
+}
+
+Track.prototype.removePickupAt = function(x, y) {
+  var pickups = this.pickups.filter(function(pickup) { return !(pickup.x == x && pickup.y == y) });
+  console.log(pickups);
+  this.pickups = pickups;
+}
+
 Track.prototype.getFinishLinePositions = function() {
+  var track = this;
   var finishLine = [];
   this.pickups.forEach(function(pickup) {
     if (pickup.type == "finish") {
-      finishLine = finishLine.concat(pickup.positions());
+      var positions = pickup.positions();
+      // add all positions not already in there
+      positions.forEach(function(position) {
+        if (!(track.findByCoordinates(finishLine, position).length > 0)) {
+          finishLine.push(position);
+        };
+      });
     };
   });
   return finishLine;
@@ -115,6 +146,11 @@ Track.prototype.loadPath = function() {
 
 Track.prototype.mapToGrid = function(position) {
   return Math.round(position / this.tileSize);
+}
+
+Track.prototype.findByCoordinates = function(array, object) {
+  var objects = $.grep(array, function(obj) {obj.x == object.x && obj.y == object.y});
+  return objects;
 }
 
 

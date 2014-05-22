@@ -17,23 +17,57 @@ function Race(id) {
 
 Race.prototype.moveActivePlayerTo = function(x, y) {
   if (this.isPossiblePosition(x, y)) {
-    if (this.track.canBeMovedTo(x, y)) {
-      this.positions[this.activePlayer.id][this.turn]["x"] = x;
-      this.positions[this.activePlayer.id][this.turn]["y"] = y;
-      this.positions[this.activePlayer.id][this.turn]["crashed"] = undefined;
-      this.render();
+    var currentPosition = this.positions[this.activePlayer.id][this.turn-1];
 
-    } else {
-      var currentPosition = this.positions[this.activePlayer.id][this.turn-1];
+    // remove pickups of aleady made moves for this round
+    var activePosition = this.positions[this.activePlayer.id][this.turn];
+    if (activePosition) {
+      this.dropPickupsAt(activePosition.x, activePosition.y);
+    };
+
+    var crashed;
+    // crash
+    if (!this.track.canBeMovedTo(x, y)) {
       var nearestBorder = this.getNearestBorderPositionBetween(x, y, currentPosition);
-
-      this.positions[this.activePlayer.id][this.turn]["x"] = nearestBorder["x"];
-      this.positions[this.activePlayer.id][this.turn]["y"] = nearestBorder["y"];
-      this.positions[this.activePlayer.id][this.turn]["crashed"] = true;
-
-      this.render();
+      x = nearestBorder["x"];
+      y = nearestBorder["y"];
+      crashed = true;
     }
+
+    this.positions[this.activePlayer.id][this.turn] = this.positions[this.activePlayer.id][this.turn] || {}
+    this.positions[this.activePlayer.id][this.turn]["x"] = x;
+    this.positions[this.activePlayer.id][this.turn]["y"] = y;
+    this.positions[this.activePlayer.id][this.turn]["crashed"] = crashed;
+
+    this.pickupPickupAt(x, y);
+    this.render();
   }
+}
+
+Race.prototype.pickupPickupAt = function(x, y) {
+  var race = this;
+  var pickups = this.track.getPickupsAt(x, y);
+  pickups.forEach(function(pickup) {
+    if (pickup.type != "finish") {
+      race.arsenals[race.activePlayer.id][pickup.type] += 1;
+      race.updatePickupCounter(pickup.type);
+    };
+  });
+}
+
+Race.prototype.dropPickupsAt = function(x, y) {
+  var race = this;
+  var pickups = this.track.getPickupsAt(x, y);
+  var race = this;
+  pickups.forEach(function(pickup) {
+    race.arsenals[race.activePlayer.id][pickup.type] -= 1;
+    race.updatePickupCounter(pickup.type);
+  });
+}
+
+Race.prototype.updatePickupCounter = function(type) {
+  var counter = this.arsenals[this.activePlayer.id][type];
+  $(".pickup."+type+"").html(counter);
 }
 
 Race.prototype.getNearestBorderPositionBetween = function(x, y, currentPosition) {
@@ -77,8 +111,8 @@ Race.prototype.initialize = function() {
   this.loadData();
   this.loadCurrentUser();
   this.loadCanvas();
-  this.computeNextPosition();
-  this.computePossiblePositions();
+  //this.computeNextPosition();
+  this.setPossiblePositions();
   this.render();
 };
 
@@ -122,9 +156,9 @@ Race.prototype.loadCanvas = function() {
   this.context = this.canvas.getContext("2d");
 }
 
-Race.prototype.computePossiblePositions = function() {
+Race.prototype.setPossiblePositions = function() {
   var possiblePositions = [];
-  var nextPosition = this.positions[this.activePlayer.id][this.turn];
+  var nextPosition = this.getNextPosition(); //this.positions[this.activePlayer.id][this.turn];
 
   // if first turn, set possible positions to finish line
   // else compute based on last turn's position
@@ -148,7 +182,7 @@ Race.prototype.computePossiblePositions = function() {
   this.possiblePositions = possiblePositions;
 }
 
-Race.prototype.computeNextPosition = function() {
+Race.prototype.getNextPosition = function() {
   var lastPosition;
   var currentPosition = this.positions[this.activePlayer.id][this.turn-1];
   var nextPosition = {};
@@ -176,11 +210,13 @@ Race.prototype.computeNextPosition = function() {
     nextPosition["y"] = undefined;
   }
 
-  this.positions[this.activePlayer.id][this.turn] = {};
-  this.positions[this.activePlayer.id][this.turn] = {};
+  return nextPosition;
 
-  this.positions[this.activePlayer.id][this.turn]["x"] = nextPosition["x"];
-  this.positions[this.activePlayer.id][this.turn]["y"] = nextPosition["y"];
+  //this.positions[this.activePlayer.id][this.turn] = {};
+  //this.positions[this.activePlayer.id][this.turn] = {};
+
+  //this.positions[this.activePlayer.id][this.turn]["x"] = nextPosition["x"];
+  //this.positions[this.activePlayer.id][this.turn]["y"] = nextPosition["y"];
 }
 
 Race.prototype.loadPath = function() {

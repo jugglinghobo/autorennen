@@ -33,7 +33,7 @@
               %tr
                 %td
                   %img{:src => "/images/#{pickup}.png", :width => "20", :height => "20"}
-                %td
+                %td{:class => "pickup #{pickup}"}
                   = @race.arsenal_for(player)[pickup]
 
 
@@ -56,7 +56,8 @@
                 - ["booster", "rocket", "mine"].each do |pickup|
                   %label.btn.btn-default
                     %image{:id => "pickup-#{pickup}", :src => "/images/#{pickup}.png", :width => "15", :height => "15"}
-                    = ": #{arsenal[pickup]}"
+                    %span{:class => "pickup #{pickup}"}
+                      = "#{arsenal[pickup]}"
                     %input{:id => pickup, :type => "radio", :name => pickup}
           .col-md-2
             .btn-group.pull-right

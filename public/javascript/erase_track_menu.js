@@ -18,14 +18,14 @@ function EraseTrackMenu(track, canvas) {
         this.mouseX = mouseX;
         this.mouseY = mouseY;
         this.erasing = true;
-        this.removeTile(this.mouseX, this.mouseY, false);
+        this.removeAt(this.mouseX, this.mouseY, false);
       break;
 
       case 'mousemove':
         if(this.erasing) {
           var mouseX = event.pageX - this.canvas.offsetLeft;
           var mouseY = event.pageY - this.canvas.offsetTop;
-          this.removeTile(mouseX, mouseY, true);
+          this.removeAt(mouseX, mouseY, true);
         }
       break;
 
@@ -59,11 +59,9 @@ EraseTrackMenu.prototype.removeEraseTrackEventListeners = function() {
   this.canvas.removeEventListener("mouseleave", this);
 }
 
-EraseTrackMenu.prototype.removeTile = function(mouseX, mouseY, dragged) {
+EraseTrackMenu.prototype.removeAt = function(mouseX, mouseY, dragged) {
   var x = Math.floor(mouseX / this.tileSize) * this.tileSize;
   var y = Math.floor(mouseY / this.tileSize) * this.tileSize;
-  var col = x/this.tileSize;
-  var row = y/this.tileSize;
-  this.track.removeTileAt(col, row);
+  this.track.clearAt(x, y);
 };
 
