@@ -70,6 +70,7 @@ Track.prototype.clear = function() {
       this.tileGrid[c][r] = new Tile(this, c, r, this.tileSize);
     };
   };
+  this.pickups = [];
   this.render();
 };
 

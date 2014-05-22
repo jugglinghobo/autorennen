@@ -12,7 +12,6 @@ require './environment'
 require './user'
 require './race'
 require './track'
-require './tile'
 
 
 
